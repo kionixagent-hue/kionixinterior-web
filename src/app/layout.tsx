@@ -20,9 +20,41 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const title = "Kionix Interior — Batam";
+const description = "Spesialis interior rumah, kantor, apartemen & hotel di Batam";
+const ogImage = "/images/portfolio/kitchen-set.jpg";
+
 export const metadata: Metadata = {
-  title: "Kionix Interior — Batam",
-  description: "Spesialis interior rumah, kantor, apartemen & hotel di Batam",
+  metadataBase: new URL("https://kionixinterior.com"),
+  title,
+  description,
+  keywords: [
+    "jasa interior batam",
+    "desain interior batam",
+    "kontraktor interior batam",
+    "interior rumah batam",
+    "interior kantor batam",
+    "interior apartemen batam",
+    "interior hotel batam",
+    "kitchen set batam",
+    "lemari custom batam",
+    "kionix interior",
+  ],
+  openGraph: {
+    title,
+    description,
+    url: "https://kionixinterior.com",
+    siteName: "Kionix Interior",
+    images: [{ url: ogImage }],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: [ogImage],
+  },
 };
 
 export default function RootLayout({

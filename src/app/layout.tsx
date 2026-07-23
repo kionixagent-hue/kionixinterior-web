@@ -22,7 +22,7 @@ const jakarta = Plus_Jakarta_Sans({
 
 const title = "Kionix Interior — Batam";
 const description = "Spesialis interior rumah, kantor, apartemen & hotel di Batam";
-const ogImage = "/images/portfolio/kitchen-set.jpg";
+const ogImage = "/og-image.jpg";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kionixinterior.com"),
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     description,
     url: "https://kionixinterior.com",
     siteName: "Kionix Interior",
-    images: [{ url: ogImage }],
+    images: [{ url: ogImage, width: 1200, height: 630 }],
     locale: "id_ID",
     type: "website",
   },

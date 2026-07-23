@@ -2,8 +2,8 @@ import Image from 'next/image'
 
 // height fixed at 100px; width proportional to original aspect ratio
 const clients = [
-  { src: '/images/logo-hotel-89.png', alt: 'Hotel 89', width: 100, height: 100 },
-  { src: '/images/logo-lamoist.png',  alt: 'Lamoist',  width: 203, height: 100 },
+  { src: '/images/logo-hotel-89.png', alt: 'Hotel 89', width: 100, height: 100, href: 'https://89hotel.com/id-id/' },
+  { src: '/images/logo-lamoist.png',  alt: 'Lamoist',  width: 203, height: 100, href: 'https://lamoist.com/' },
 ]
 
 export default function KlienKami() {
@@ -21,10 +21,16 @@ export default function KlienKami() {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-16">
-          {clients.map(({ src, alt, width, height }) => (
-            <div key={alt} className="grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
+          {clients.map(({ src, alt, width, height, href }) => (
+            <a
+              key={alt}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
+            >
               <Image src={src} alt={alt} width={width} height={height} />
-            </div>
+            </a>
           ))}
         </div>
       </div>

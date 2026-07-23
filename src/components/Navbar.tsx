@@ -3,17 +3,20 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Menu, X } from 'lucide-react'
 import { openWaModal } from '@/components/WaLeadModal'
 
-const navLinks = [
-  { label: 'LAYANAN', href: '#layanan' },
-  { label: 'PORTFOLIO', href: '#portfolio' },
-  { label: 'TENTANG', href: '#tentang' },
-  { label: 'KONTAK', href: '#kontak' },
-]
+const navKeys = ['layanan', 'portfolio', 'tentang', 'kontak'] as const
+const navHrefs: Record<(typeof navKeys)[number], string> = {
+  layanan: '#layanan',
+  portfolio: '#portfolio',
+  tentang: '#tentang',
+  kontak: '#kontak',
+}
 
 export default function Navbar() {
+  const t = useTranslations('nav')
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -36,13 +39,13 @@ export default function Navbar() {
       </Link>
 
       <ul className="hidden md:flex gap-10 items-center">
-        {navLinks.map(({ label, href }) => (
-          <li key={href}>
+        {navKeys.map((key) => (
+          <li key={key}>
             <a
-              href={href}
+              href={navHrefs[key]}
               className="font-sans font-semibold text-xs tracking-widest text-bg-dark hover:text-accent transition-colors"
             >
-              {label}
+              {t(key)}
             </a>
           </li>
         ))}
@@ -53,7 +56,7 @@ export default function Navbar() {
         onClick={() => openWaModal('navbar-desktop')}
         className="hidden md:inline-flex items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
       >
-        Konsultasi Gratis →
+        {t('cta')}
       </button>
 
       <button
@@ -67,14 +70,14 @@ export default function Navbar() {
       {open && (
         <div className="absolute top-16 inset-x-0 bg-white border-b border-border shadow-md md:hidden">
           <ul className="flex flex-col py-4">
-            {navLinks.map(({ label, href }) => (
-              <li key={href}>
+            {navKeys.map((key) => (
+              <li key={key}>
                 <a
-                  href={href}
+                  href={navHrefs[key]}
                   className="block px-5 py-3 font-sans font-semibold text-xs tracking-widest text-bg-dark hover:text-accent"
                   onClick={() => setOpen(false)}
                 >
-                  {label}
+                  {t(key)}
                 </a>
               </li>
             ))}
@@ -87,7 +90,7 @@ export default function Navbar() {
                 }}
                 className="block w-full text-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
               >
-                Konsultasi Gratis →
+                {t('cta')}
               </button>
             </li>
           </ul>

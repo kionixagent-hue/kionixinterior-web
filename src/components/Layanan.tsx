@@ -1,5 +1,6 @@
 import { UtensilsCrossed, Package2, Tv2, Home, Building2, Hotel } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
 interface Service {
   icon: LucideIcon
@@ -7,40 +8,6 @@ interface Service {
   desc: string
   wide?: boolean
 }
-
-const services: Service[] = [
-  {
-    icon: UtensilsCrossed,
-    title: 'Kitchen Set',
-    desc: 'Desain dan instalasi kitchen set custom sesuai ukuran dapur Anda. Material premium, finishing rapi, fungsional dan estetik.',
-  },
-  {
-    icon: Package2,
-    title: 'Lemari Custom',
-    desc: 'Lemari built-in dan wardrobe custom sesuai kebutuhan ruang dan selera Anda.',
-  },
-  {
-    icon: Tv2,
-    title: 'Backdrop TV',
-    desc: 'Panel dinding TV yang elegan, menjadi focal point ruang tamu yang memukau.',
-  },
-  {
-    icon: Hotel,
-    title: 'Hotel & Apartemen',
-    desc: 'Solusi interior lengkap untuk properti komersial — hotel, apartemen, villa, dan resort. Kami menghadirkan estetika yang selaras dengan identitas brand Anda.',
-    wide: true,
-  },
-  {
-    icon: Home,
-    title: 'Renovasi Rumah',
-    desc: 'Renovasi total atau parsial dengan konsep modern dan material berkualitas.',
-  },
-  {
-    icon: Building2,
-    title: 'Interior Kantor',
-    desc: 'Workspace profesional yang meningkatkan produktivitas dan citra bisnis Anda.',
-  },
-]
 
 function ServiceCard({ icon: Icon, title, desc, wide }: Service) {
   return (
@@ -58,15 +25,26 @@ function ServiceCard({ icon: Icon, title, desc, wide }: Service) {
   )
 }
 
-export default function Layanan() {
+export default async function Layanan() {
+  const t = await getTranslations('layanan')
+
+  const services: Service[] = [
+    { icon: UtensilsCrossed, title: t('kitchenSet.title'), desc: t('kitchenSet.desc') },
+    { icon: Package2, title: t('lemariCustom.title'), desc: t('lemariCustom.desc') },
+    { icon: Tv2, title: t('backdropTv.title'), desc: t('backdropTv.desc') },
+    { icon: Hotel, title: t('hotelApartemen.title'), desc: t('hotelApartemen.desc'), wide: true },
+    { icon: Home, title: t('renovasiRumah.title'), desc: t('renovasiRumah.desc') },
+    { icon: Building2, title: t('interiorKantor.title'), desc: t('interiorKantor.desc') },
+  ]
+
   return (
     <section id="layanan" className="bg-bg-section px-5 py-24 md:px-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col gap-3">
           <span className="font-sans font-semibold text-[11px] tracking-[1.32px] text-accent uppercase">
-            APA YANG KAMI TAWARKAN
+            {t('eyebrow')}
           </span>
-          <h2 className="font-serif text-5xl font-bold text-bg-dark">Layanan Kami</h2>
+          <h2 className="font-serif text-5xl font-bold text-bg-dark">{t('title')}</h2>
           <div className="h-0.5 w-12 bg-accent" />
         </div>
 

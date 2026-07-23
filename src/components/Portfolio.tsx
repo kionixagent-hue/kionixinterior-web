@@ -2,52 +2,57 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
-const projects = [
-  { title: 'Kitchen Set',    category: 'DAPUR',        img: '/images/portfolio/kitchen-set.jpg' },
-  { title: 'Kamar Tidur',   category: 'BEDROOM',       img: '/images/portfolio/bedroom.jpg' },
-  { title: 'Ruang Tamu',    category: 'LIVING ROOM',   img: '/images/portfolio/living-room.jpg' },
-  { title: 'Kantor Modern', category: 'OFFICE',        img: '/images/portfolio/office.jpg' },
-  { title: 'Backdrop TV',   category: 'FEATURE WALL',  img: '/images/portfolio/backdrop-tv.jpg' },
-  { title: 'Retail Booth',  category: 'RETAIL',        img: '/images/portfolio/retail-booth.jpg' },
-  { title: 'Lemari Custom', category: 'STORAGE',       img: '/images/portfolio/lemari-custom.jpg' },
-  { title: 'Apartemen',     category: 'RESIDENTIAL',   img: '/images/portfolio/apartment.jpg' },
-  { title: 'Renovasi',      category: 'RENOVATION',    img: '/images/portfolio/project.jpg' },
-]
+const projectKeys = [
+  'kitchenSet', 'kamarTidur', 'ruangTamu', 'kantorModern', 'backdropTv',
+  'retailBooth', 'lemariCustom', 'apartemen', 'renovasi',
+] as const
 
-type Project = (typeof projects)[number]
+const projectImages: Record<(typeof projectKeys)[number], string> = {
+  kitchenSet: '/images/portfolio/kitchen-set.jpg',
+  kamarTidur: '/images/portfolio/bedroom.jpg',
+  ruangTamu: '/images/portfolio/living-room.jpg',
+  kantorModern: '/images/portfolio/office.jpg',
+  backdropTv: '/images/portfolio/backdrop-tv.jpg',
+  retailBooth: '/images/portfolio/retail-booth.jpg',
+  lemariCustom: '/images/portfolio/lemari-custom.jpg',
+  apartemen: '/images/portfolio/apartment.jpg',
+  renovasi: '/images/portfolio/project.jpg',
+}
 
 export default function Portfolio() {
-  const [selected, setSelected] = useState<Project | null>(null)
+  const t = useTranslations('portfolio')
+  const [selectedKey, setSelectedKey] = useState<(typeof projectKeys)[number] | null>(null)
 
   useEffect(() => {
-    if (!selected) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelected(null) }
+    if (!selectedKey) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelectedKey(null) }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selected])
+  }, [selectedKey])
 
   return (
     <section id="portfolio" className="bg-white px-5 py-24 md:px-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col items-center gap-3 text-center">
           <span className="font-sans font-semibold text-[11px] tracking-[1.32px] text-accent uppercase">
-            HASIL KARYA
+            {t('eyebrow')}
           </span>
-          <h2 className="font-serif text-5xl font-bold text-bg-dark">Hasil Karya Kami</h2>
+          <h2 className="font-serif text-5xl font-bold text-bg-dark">{t('title')}</h2>
           <div className="h-0.5 w-12 bg-accent" />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
+          {projectKeys.map((key) => (
             <button
-              key={p.title}
-              onClick={() => setSelected(p)}
+              key={key}
+              onClick={() => setSelectedKey(key)}
               className="relative h-64 overflow-hidden rounded-lg group text-left"
             >
               <Image
-                src={p.img}
-                alt={p.title}
+                src={projectImages[key]}
+                alt={t(`${key}.title`)}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -56,10 +61,10 @@ export default function Portfolio() {
                 <div className="translate-y-4 transform text-center transition-transform duration-300 group-hover:translate-y-0">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="h-px w-6 bg-[#c5a46c]" />
-                    <span className="font-sans font-semibold text-[10px] tracking-[1.2px] text-[#c5a46c] uppercase">{p.category}</span>
+                    <span className="font-sans font-semibold text-[10px] tracking-[1.2px] text-[#c5a46c] uppercase">{t(`${key}.category`)}</span>
                     <span className="h-px w-6 bg-[#c5a46c]" />
                   </div>
-                  <p className="font-serif italic text-2xl text-white">{p.title}</p>
+                  <p className="font-serif italic text-2xl text-white">{t(`${key}.title`)}</p>
                 </div>
               </div>
             </button>
@@ -69,13 +74,13 @@ export default function Portfolio() {
 
       {/* Lightbox modal */}
       <AnimatePresence>
-        {selected && (
+        {selectedKey && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
+            onClick={() => setSelectedKey(null)}
           >
             <motion.div
               className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl"
@@ -87,8 +92,8 @@ export default function Portfolio() {
             >
               <div className="relative aspect-[4/3]">
                 <Image
-                  src={selected.img}
-                  alt={selected.title}
+                  src={projectImages[selectedKey]}
+                  alt={t(`${selectedKey}.title`)}
                   fill
                   sizes="(max-width: 768px) 100vw, 80vw"
                   className="object-cover"
@@ -97,14 +102,14 @@ export default function Portfolio() {
               </div>
               {/* Caption */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-6 pb-6 pt-12">
-                <span className="font-sans text-[10px] font-semibold tracking-[1.2px] text-[#c5a46c] uppercase">{selected.category}</span>
-                <p className="font-serif italic text-2xl text-white">{selected.title}</p>
+                <span className="font-sans text-[10px] font-semibold tracking-[1.2px] text-[#c5a46c] uppercase">{t(`${selectedKey}.category`)}</span>
+                <p className="font-serif italic text-2xl text-white">{t(`${selectedKey}.title`)}</p>
               </div>
               {/* Close button */}
               <button
-                onClick={() => setSelected(null)}
+                onClick={() => setSelectedKey(null)}
                 className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
-                aria-label="Tutup"
+                aria-label={t('close')}
               >
                 ✕
               </button>

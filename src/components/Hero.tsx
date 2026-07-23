@@ -2,8 +2,7 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import { WHATSAPP_URL } from '@/lib/constants'
-import { trackWaClick } from '@/lib/trackWaClick'
+import { openWaModal } from '@/components/WaLeadModal'
 
 const slides = [
   '/images/portfolio/kitchen-set.jpg',
@@ -70,15 +69,13 @@ export default function Hero() {
           Spesialis interior rumah, kantor, apartemen &amp; hotel di Batam
         </p>
 
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackWaClick('hero')}
+        <button
+          type="button"
+          onClick={() => openWaModal('hero')}
           className="mt-12 inline-flex w-fit items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-sm px-8 py-4 rounded transition-colors"
         >
           Konsultasi Gratis via WhatsApp →
-        </a>
+        </button>
 
         <a
           href="#layanan"

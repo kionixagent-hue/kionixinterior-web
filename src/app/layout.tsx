@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import FloatingWA from "@/components/FloatingWA";
+import WaLeadModal from "@/components/WaLeadModal";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -38,6 +39,7 @@ export default function RootLayout({
         <Navbar />
         <div id="main-content">{children}</div>
         <FloatingWA />
+        <WaLeadModal />
       </body>
     </html>
   );

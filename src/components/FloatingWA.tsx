@@ -2,14 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { openWaModal } from '@/components/WaLeadModal'
 
 export default function FloatingWA() {
   return (
-    <a
-      href={`${WHATSAPP_URL}?text=Halo%20Kionix%2C%20saya%20ingin%20konsultasi`}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => openWaModal('floating')}
       aria-label="Chat via WhatsApp"
       className="fixed bottom-6 right-6 z-50 group"
     >
@@ -23,6 +22,6 @@ export default function FloatingWA() {
       <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-bg-dark text-text-on-dark text-xs font-sans font-semibold px-3 py-1.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
         Chat Sekarang
       </span>
-    </a>
+    </button>
   )
 }

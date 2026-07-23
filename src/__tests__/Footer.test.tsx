@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import Footer from '@/components/Footer'
 
-test('Footer renders copyright and floating WA button', () => {
+test('Footer renders copyright and social links', () => {
   render(<Footer />)
   expect(screen.getByText(/Kionix Interior/)).toBeInTheDocument()
-  const wa = screen.getByRole('link', { name: /whatsapp/i })
-  expect(wa).toHaveAttribute('href', expect.stringContaining('wa.me/6281372703589'))
+  const instagram = screen.getByRole('link', { name: /instagram/i })
+  expect(instagram).toHaveAttribute('href', expect.stringContaining('instagram.com/kionixinterior'))
 })

@@ -1,8 +1,11 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import Navbar from '@/components/Navbar'
 
-test('Navbar renders WA CTA link', () => {
+test('Navbar WA CTA opens lead modal', () => {
+  const handler = jest.fn()
+  window.addEventListener('open-wa-modal', handler)
   render(<Navbar />)
-  const link = screen.getByRole('link', { name: /konsultasi gratis/i })
-  expect(link).toHaveAttribute('href', expect.stringContaining('wa.me/6281372703589'))
+  fireEvent.click(screen.getByRole('button', { name: /konsultasi gratis/i }))
+  expect(handler).toHaveBeenCalledTimes(1)
+  window.removeEventListener('open-wa-modal', handler)
 })

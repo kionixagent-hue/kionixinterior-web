@@ -4,8 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
-import { WHATSAPP_URL } from '@/lib/constants'
-import { trackWaClick } from '@/lib/trackWaClick'
+import { openWaModal } from '@/components/WaLeadModal'
 
 const navLinks = [
   { label: 'LAYANAN', href: '#layanan' },
@@ -49,15 +48,13 @@ export default function Navbar() {
         ))}
       </ul>
 
-      <a
-        href={WHATSAPP_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => trackWaClick('navbar-desktop')}
+      <button
+        type="button"
+        onClick={() => openWaModal('navbar-desktop')}
         className="hidden md:inline-flex items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
       >
         Konsultasi Gratis →
-      </a>
+      </button>
 
       <button
         className="md:hidden p-2 text-bg-dark"
@@ -82,15 +79,16 @@ export default function Navbar() {
               </li>
             ))}
             <li className="px-5 pt-3">
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackWaClick('navbar-mobile')}
-                className="block text-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  openWaModal('navbar-mobile')
+                }}
+                className="block w-full text-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
               >
                 Konsultasi Gratis →
-              </a>
+              </button>
             </li>
           </ul>
         </div>

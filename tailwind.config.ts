@@ -20,8 +20,8 @@ const config: Config = {
         "wa-hover": "#1DA851",
       },
       fontFamily: {
-        serif: ["var(--font-cormorant)", "Georgia", "serif"],
-        sans: ["var(--font-jakarta)", "system-ui", "sans-serif"],
+        serif: ["var(--font-cormorant)", "var(--font-noto-sc)", "Georgia", "serif"],
+        sans: ["var(--font-jakarta)", "var(--font-noto-sc)", "system-ui", "sans-serif"],
       },
     },
   },

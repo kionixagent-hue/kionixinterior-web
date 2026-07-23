@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 
 const slides = [
   { src: '/workshop1.jpg', alt: 'Workshop Kionix 1' },
@@ -13,37 +14,37 @@ const slides = [
 // clone pertama di akhir untuk loop mulus
 const loop = [...slides, slides[0]]
 
-const stats = [
-  { value: '50+', label: 'Proyek Selesai' },
-  { value: '100%', label: 'Klien Puas' },
-  { value: 'Batam', label: 'Area Layanan' },
-]
-
 export default function TentangKami() {
+  const t = useTranslations('tentang')
   const [current, setCurrent] = useState(0)
   const [animated, setAnimated] = useState(true)
 
   useEffect(() => {
-    const t = setInterval(() => setCurrent((c) => c + 1), 3500)
-    return () => clearInterval(t)
+    const timer = setInterval(() => setCurrent((c) => c + 1), 3500)
+    return () => clearInterval(timer)
   }, [])
 
   // Saat sampai di clone (index 4), silent jump ke index 0
   useEffect(() => {
     if (current === slides.length) {
-      const t = setTimeout(() => {
+      const t2 = setTimeout(() => {
         setAnimated(false)
         setCurrent(0)
       }, 700)
-      return () => clearTimeout(t)
+      return () => clearTimeout(t2)
     }
     if (!animated) {
-      const t = setTimeout(() => setAnimated(true), 50)
-      return () => clearTimeout(t)
+      const t2 = setTimeout(() => setAnimated(true), 50)
+      return () => clearTimeout(t2)
     }
   }, [current, animated])
 
   const activeDot = current % slides.length
+  const stats = [
+    { value: '50+', label: t('statProjects') },
+    { value: '100%', label: t('statClients') },
+    { value: 'Batam', label: t('statArea') },
+  ]
 
   return (
     <section id="tentang" className="bg-bg-dark px-5 py-24 md:px-20">
@@ -88,14 +89,14 @@ export default function TentangKami() {
         {/* Content */}
         <div className="flex flex-col gap-6">
           <span className="font-sans font-semibold text-[11px] tracking-[1.32px] text-accent uppercase">
-            TENTANG KAMI
+            {t('eyebrow')}
           </span>
           <h2 className="font-serif text-4xl font-bold text-text-on-dark">
-            Tentang Kionix Interior
+            {t('title')}
           </h2>
           <div className="h-0.5 w-12 bg-accent" />
           <p className="font-sans text-[15px] leading-[1.75] text-text-muted max-w-xl">
-            Kionix Interior hadir untuk mewujudkan ruang impian Anda di Batam. Dengan tim berpengalaman dan komitmen terhadap kualitas, kami menghadirkan solusi interior yang memadukan estetika premium dengan kepraktisan sehari-hari.
+            {t('desc')}
           </p>
 
           <div className="flex gap-12">

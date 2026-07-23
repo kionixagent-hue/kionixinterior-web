@@ -1,4 +1,4 @@
-import { screen, fireEvent } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { renderWithIntl } from './test-utils'
 import Portfolio from '@/components/Portfolio'
 

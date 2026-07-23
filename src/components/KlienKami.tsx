@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { getTranslations } from 'next-intl/server'
 
 // height fixed at 100px; width proportional to original aspect ratio
 const clients = [
@@ -6,16 +7,18 @@ const clients = [
   { src: '/images/logo-lamoist.png',  alt: 'Lamoist',  width: 203, height: 100, href: 'https://lamoist.com/' },
 ]
 
-export default function KlienKami() {
+export default async function KlienKami() {
+  const t = await getTranslations('klien')
+
   return (
     <section id="klien" className="bg-white px-5 py-20 md:px-20">
       <div className="mx-auto max-w-7xl flex flex-col items-center gap-12">
         <div className="flex flex-col items-center gap-3">
           <span className="font-sans font-semibold text-[11px] tracking-[1.32px] text-accent uppercase">
-            KLIEN KAMI
+            {t('eyebrow')}
           </span>
           <h2 className="font-serif text-4xl font-bold text-gray-900">
-            Dipercaya Oleh
+            {t('title')}
           </h2>
           <div className="h-0.5 w-12 bg-accent" />
         </div>

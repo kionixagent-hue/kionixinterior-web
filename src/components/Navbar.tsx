@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { WHATSAPP_URL } from '@/lib/constants'
+import { trackWaClick } from '@/lib/trackWaClick'
 
 const navLinks = [
   { label: 'LAYANAN', href: '#layanan' },
@@ -52,6 +53,7 @@ export default function Navbar() {
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackWaClick('navbar-desktop')}
         className="hidden md:inline-flex items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
       >
         Konsultasi Gratis →
@@ -84,6 +86,7 @@ export default function Navbar() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWaClick('navbar-mobile')}
                 className="block text-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
               >
                 Konsultasi Gratis →

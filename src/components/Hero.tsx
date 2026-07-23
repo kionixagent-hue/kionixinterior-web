@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import { WHATSAPP_URL } from '@/lib/constants'
+import { trackWaClick } from '@/lib/trackWaClick'
 
 const slides = [
   '/images/portfolio/kitchen-set.jpg',
@@ -73,6 +74,7 @@ export default function Hero() {
           href={WHATSAPP_URL}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackWaClick('hero')}
           className="mt-12 inline-flex w-fit items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-sm px-8 py-4 rounded transition-colors"
         >
           Konsultasi Gratis via WhatsApp →

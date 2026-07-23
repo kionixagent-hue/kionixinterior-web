@@ -1,5 +1,8 @@
+'use client'
+
 import Image from 'next/image'
 import { WHATSAPP_URL, INSTAGRAM_URL, TIKTOK_URL } from '@/lib/constants'
+import { trackWaClick } from '@/lib/trackWaClick'
 
 const links = [
   { label: 'Layanan', href: '#layanan' },
@@ -67,6 +70,7 @@ export default function Footer() {
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackWaClick('footer-floating')}
         aria-label="Chat WhatsApp"
         className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg hover:bg-[#1ebe57] transition-colors"
       >

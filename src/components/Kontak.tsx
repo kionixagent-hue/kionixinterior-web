@@ -1,4 +1,7 @@
+'use client'
+
 import { WHATSAPP_URL } from '@/lib/constants'
+import { trackWaClick } from '@/lib/trackWaClick'
 
 const info = [
   { icon: '📍', text: 'Ruko Ciptaland Blok Lavender No.26, Batam' },
@@ -33,6 +36,7 @@ export default function Kontak() {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWaClick('kontak')}
             className="inline-flex w-fit items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-sm px-8 py-4 rounded transition-colors"
           >
             Mulai Proyek Anda →

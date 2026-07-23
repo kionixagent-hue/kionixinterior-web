@@ -1,14 +1,18 @@
 import Image from 'next/image'
+import { getTranslations } from 'next-intl/server'
 import { INSTAGRAM_URL, TIKTOK_URL } from '@/lib/constants'
 
-const links = [
-  { label: 'Layanan', href: '#layanan' },
-  { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Tentang', href: '#tentang' },
-  { label: 'Kontak', href: '#kontak' },
-]
+const navKeys = ['layanan', 'portfolio', 'tentang', 'kontak'] as const
+const navHrefs: Record<(typeof navKeys)[number], string> = {
+  layanan: '#layanan',
+  portfolio: '#portfolio',
+  tentang: '#tentang',
+  kontak: '#kontak',
+}
 
-export default function Footer() {
+export default async function Footer() {
+  const t = await getTranslations('nav')
+
   return (
     <footer className="bg-bg-dark px-5 py-10 md:px-20">
       <div className="mx-auto max-w-7xl">
@@ -17,13 +21,13 @@ export default function Footer() {
             <Image src="/logo.png" alt="Kionix Interior" fill className="object-contain brightness-0 invert" />
           </div>
           <nav className="flex flex-wrap gap-8">
-            {links.map(({ label, href }) => (
+            {navKeys.map((key) => (
               <a
-                key={href}
-                href={href}
+                key={key}
+                href={navHrefs[key]}
                 className="font-sans font-medium text-sm text-text-on-dark hover:text-accent transition-colors"
               >
-                {label}
+                {t(key)}
               </a>
             ))}
           </nav>

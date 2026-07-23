@@ -2,14 +2,17 @@
 
 import { motion } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { openWaModal } from '@/components/WaLeadModal'
 
 export default function FloatingWA() {
+  const t = useTranslations('floatingWa')
+
   return (
     <button
       type="button"
       onClick={() => openWaModal('floating')}
-      aria-label="Chat via WhatsApp"
+      aria-label={t('ariaLabel')}
       className="fixed bottom-6 right-6 z-50 group"
     >
       <motion.div
@@ -20,7 +23,7 @@ export default function FloatingWA() {
         <MessageCircle size={28} />
       </motion.div>
       <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-bg-dark text-text-on-dark text-xs font-sans font-semibold px-3 py-1.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-        Chat Sekarang
+        {t('tooltip')}
       </span>
     </button>
   )

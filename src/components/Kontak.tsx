@@ -1,24 +1,27 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { openWaModal } from '@/components/WaLeadModal'
 
-const info = [
-  { icon: '📍', text: 'Ruko Ciptaland Blok Lavender No.26, Batam' },
-  { icon: '📱', text: '0813-7270-3589' },
-  { icon: '🕐', text: 'Senin–Sabtu: 08.00–17.00 WIB' },
-]
-
 export default function Kontak() {
+  const t = useTranslations('kontak')
+
+  const info = [
+    { icon: '📍', text: 'Ruko Ciptaland Blok Lavender No.26, Batam' },
+    { icon: '📱', text: '0813-7270-3589' },
+    { icon: '🕐', text: t('hours') },
+  ]
+
   return (
     <section id="kontak" className="bg-white px-5 py-24 md:px-20">
       <div className="mx-auto flex max-w-7xl flex-col gap-16 md:flex-row md:items-start">
         {/* Info */}
         <div className="flex flex-col gap-6 md:w-[560px]">
           <span className="font-sans font-semibold text-[11px] tracking-[1.32px] text-accent uppercase">
-            HUBUNGI KAMI
+            {t('eyebrow')}
           </span>
           <h2 className="font-serif text-4xl font-bold leading-tight text-bg-dark">
-            Mulai Proyek<br />Impian Anda
+            {t('titleLine1')}<br />{t('titleLine2')}
           </h2>
           <div className="h-0.5 w-12 bg-accent" />
 
@@ -36,7 +39,7 @@ export default function Kontak() {
             onClick={() => openWaModal('kontak')}
             className="inline-flex w-fit items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-sm px-8 py-4 rounded transition-colors"
           >
-            Mulai Proyek Anda →
+            {t('cta')}
           </button>
         </div>
 

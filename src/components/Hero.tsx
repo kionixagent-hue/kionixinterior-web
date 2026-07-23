@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { openWaModal } from '@/components/WaLeadModal'
 
 const slides = [
@@ -16,11 +17,12 @@ const slides = [
 ]
 
 export default function Hero() {
+  const t = useTranslations('hero')
   const [idx, setIdx] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000)
-    return () => clearInterval(t)
+    const timer = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000)
+    return () => clearInterval(timer)
   }, [])
 
   return (
@@ -52,7 +54,7 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 flex w-full flex-col justify-center px-8 py-20 md:w-3/5 md:px-20">
         <span className="font-sans font-semibold text-[11px] tracking-[1.32px] text-accent uppercase">
-          JASA INTERIOR BATAM
+          {t('eyebrow')}
         </span>
 
         <div className="mt-6 h-0.5 w-12 bg-accent" />
@@ -62,11 +64,11 @@ export default function Hero() {
         </h1>
 
         <p className="mt-8 font-serif italic font-medium text-2xl md:text-3xl text-text-on-dark">
-          Wujudkan Ruang Impian Anda
+          {t('tagline')}
         </p>
 
         <p className="mt-5 font-sans text-base leading-relaxed text-text-muted max-w-lg">
-          Spesialis interior rumah, kantor, apartemen &amp; hotel di Batam
+          {t('subtitle')}
         </p>
 
         <button
@@ -74,14 +76,14 @@ export default function Hero() {
           onClick={() => openWaModal('hero')}
           className="mt-12 inline-flex w-fit items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-sm px-8 py-4 rounded transition-colors"
         >
-          Konsultasi Gratis via WhatsApp →
+          {t('cta')}
         </button>
 
         <a
           href="#layanan"
           className="mt-4 font-sans text-xs tracking-widest text-text-muted hover:text-accent transition-colors"
         >
-          ↓ Lihat Layanan Kami
+          {t('scrollCta')}
         </a>
       </div>
 

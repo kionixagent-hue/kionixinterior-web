@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "layanan": "服务",
+    "portfolio": "作品集",
+    "tentang": "关于我们",
+    "kontak": "联系我们",
+    "cta": "免费咨询 →"
+  },
+  "hero": {
+    "eyebrow": "巴淡岛室内设计服务",
+    "tagline": "打造您梦想中的空间",
+    "subtitle": "巴淡岛住宅、办公室、公寓与酒店室内设计专家",
+    "cta": "通过WhatsApp免费咨询 →",
+    "scrollCta": "↓ 查看我们的服务"
+  },
+  "layanan": {
+    "eyebrow": "我们提供的服务",
+    "title": "我们的服务",
+    "kitchenSet": { "title": "定制厨房", "desc": "根据您的厨房尺寸定制设计与安装厨房橱柜。采用优质材料，做工精细，兼具实用与美观。" },
+    "lemariCustom": { "title": "定制衣柜", "desc": "根据您的空间需求与喜好定制嵌入式衣柜与储物柜。" },
+    "backdropTv": { "title": "电视背景墙", "desc": "优雅的电视背景墙面板，成为客厅令人惊艳的视觉焦点。" },
+    "hotelApartemen": { "title": "酒店与公寓", "desc": "为商业物业提供完整的室内设计方案——酒店、公寓、别墅与度假村。我们打造与您品牌形象相契合的美学风格。" },
+    "renovasiRumah": { "title": "房屋翻新", "desc": "提供全面或局部翻新服务，采用现代设计理念与优质材料。" },
+    "interiorKantor": { "title": "办公室室内设计", "desc": "专业的办公空间，提升工作效率与企业形象。" }
+  },
+  "portfolio": {
+    "eyebrow": "作品展示",
+    "title": "我们的作品",
+    "close": "关闭",
+    "kitchenSet": { "title": "定制厨房", "category": "厨房" },
+    "kamarTidur": { "title": "卧室", "category": "卧室" },
+    "ruangTamu": { "title": "客厅", "category": "客厅" },
+    "kantorModern": { "title": "现代办公室", "category": "办公室" },
+    "backdropTv": { "title": "电视背景墙", "category": "特色墙面" },
+    "retailBooth": { "title": "零售展位", "category": "零售" },
+    "lemariCustom": { "title": "定制衣柜", "category": "收纳" },
+    "apartemen": { "title": "公寓", "category": "住宅" },
+    "renovasi": { "title": "翻新", "category": "翻新" }
+  },
+  "tentang": {
+    "eyebrow": "关于我们",
+    "title": "关于 Kionix Interior",
+    "desc": "Kionix Interior 致力于在巴淡岛为您打造梦想空间。凭借经验丰富的团队与对品质的坚持，我们提供兼具高端美学与实用性的室内设计方案。",
+    "statProjects": "已完成项目",
+    "statClients": "客户满意度",
+    "statArea": "服务区域"
+  },
+  "klien": {
+    "eyebrow": "我们的客户",
+    "title": "客户信赖"
+  },
+  "testimoni": {
+    "eyebrow": "客户评价",
+    "title": "客户怎么说",
+    "lamoist": { "quote": "\"对施工成果非常满意。设计完全符合我们的构想，做工精细，安装迅速，材料品质优良。项目期间沟通顺畅，一切进行得很顺利。Lamoist 店铺现在看起来更加高端，吸引了顾客的注意。强烈推荐！\"", "role": "店主，巴淡岛" },
+    "sariDewi": { "quote": "\"定制的衣柜与我的房间空间完美契合。最终成果非常令人满意，价格也很有竞争力。\"", "role": "公寓住户" },
+    "majuBersama": { "quote": "\"我们的办公室室内设计现在看起来更加专业。Kionix 按约定准时完成工作。\"", "role": "办公室业主，巴淡岛" }
+  },
+  "kontak": {
+    "eyebrow": "联系我们",
+    "titleLine1": "开启您的",
+    "titleLine2": "梦想项目",
+    "hours": "周一至周六：08:00–17:00（西印尼时间）",
+    "cta": "开启您的项目 →",
+    "waMessage": "您好 Kionix，我是{name}，想咨询一下"
+  },
+  "waModal": {
+    "heading": "开始咨询",
+    "subtitle": "填写您的信息，我们将在WhatsApp上继续沟通。",
+    "namePlaceholder": "您的姓名",
+    "phonePlaceholder": "WhatsApp 号码",
+    "cancel": "取消",
+    "submit": "继续 →"
+  },
+  "floatingWa": {
+    "ariaLabel": "通过WhatsApp聊天",
+    "tooltip": "立即聊天"
+  },
+  "seo": {
+    "title": "Kionix Interior — 巴淡岛室内设计",
+    "description": "巴淡岛住宅、办公室、公寓与酒店室内设计专家",
+    "keywords": ["巴淡岛室内设计", "巴淡岛室内设计师", "定制厨房巴淡岛", "定制衣柜巴淡岛", "办公室室内设计巴淡岛", "公寓室内设计巴淡岛", "酒店室内设计巴淡岛", "房屋翻新巴淡岛", "Kionix Interior", "巴淡岛室内设计承包商"]
+  }
+}

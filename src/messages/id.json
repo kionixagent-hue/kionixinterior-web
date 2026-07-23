@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "layanan": "LAYANAN",
+    "portfolio": "PORTFOLIO",
+    "tentang": "TENTANG",
+    "kontak": "KONTAK",
+    "cta": "Konsultasi Gratis →"
+  },
+  "hero": {
+    "eyebrow": "JASA INTERIOR BATAM",
+    "tagline": "Wujudkan Ruang Impian Anda",
+    "subtitle": "Spesialis interior rumah, kantor, apartemen & hotel di Batam",
+    "cta": "Konsultasi Gratis via WhatsApp →",
+    "scrollCta": "↓ Lihat Layanan Kami"
+  },
+  "layanan": {
+    "eyebrow": "APA YANG KAMI TAWARKAN",
+    "title": "Layanan Kami",
+    "kitchenSet": { "title": "Kitchen Set", "desc": "Desain dan instalasi kitchen set custom sesuai ukuran dapur Anda. Material premium, finishing rapi, fungsional dan estetik." },
+    "lemariCustom": { "title": "Lemari Custom", "desc": "Lemari built-in dan wardrobe custom sesuai kebutuhan ruang dan selera Anda." },
+    "backdropTv": { "title": "Backdrop TV", "desc": "Panel dinding TV yang elegan, menjadi focal point ruang tamu yang memukau." },
+    "hotelApartemen": { "title": "Hotel & Apartemen", "desc": "Solusi interior lengkap untuk properti komersial — hotel, apartemen, villa, dan resort. Kami menghadirkan estetika yang selaras dengan identitas brand Anda." },
+    "renovasiRumah": { "title": "Renovasi Rumah", "desc": "Renovasi total atau parsial dengan konsep modern dan material berkualitas." },
+    "interiorKantor": { "title": "Interior Kantor", "desc": "Workspace profesional yang meningkatkan produktivitas dan citra bisnis Anda." }
+  },
+  "portfolio": {
+    "eyebrow": "HASIL KARYA",
+    "title": "Hasil Karya Kami",
+    "close": "Tutup",
+    "kitchenSet": { "title": "Kitchen Set", "category": "DAPUR" },
+    "kamarTidur": { "title": "Kamar Tidur", "category": "BEDROOM" },
+    "ruangTamu": { "title": "Ruang Tamu", "category": "LIVING ROOM" },
+    "kantorModern": { "title": "Kantor Modern", "category": "OFFICE" },
+    "backdropTv": { "title": "Backdrop TV", "category": "FEATURE WALL" },
+    "retailBooth": { "title": "Retail Booth", "category": "RETAIL" },
+    "lemariCustom": { "title": "Lemari Custom", "category": "STORAGE" },
+    "apartemen": { "title": "Apartemen", "category": "RESIDENTIAL" },
+    "renovasi": { "title": "Renovasi", "category": "RENOVATION" }
+  },
+  "tentang": {
+    "eyebrow": "TENTANG KAMI",
+    "title": "Tentang Kionix Interior",
+    "desc": "Kionix Interior hadir untuk mewujudkan ruang impian Anda di Batam. Dengan tim berpengalaman dan komitmen terhadap kualitas, kami menghadirkan solusi interior yang memadukan estetika premium dengan kepraktisan sehari-hari.",
+    "statProjects": "Proyek Selesai",
+    "statClients": "Klien Puas",
+    "statArea": "Area Layanan"
+  },
+  "klien": {
+    "eyebrow": "KLIEN KAMI",
+    "title": "Dipercaya Oleh"
+  },
+  "testimoni": {
+    "eyebrow": "TESTIMONI",
+    "title": "Apa Kata Klien Kami",
+    "lamoist": { "quote": "\"Sangat puas dengan hasil pengerjaannya. Desain sesuai konsep yang kami inginkan, finishing rapi, pemasangan cepat, dan kualitas material sangat baik. Komunikasi selama proyek juga lancar sehingga semuanya berjalan tanpa kendala. Kios Lamoist sekarang tampil lebih premium dan menarik perhatian pelanggan. Highly recommended!\"", "role": "Pemilik Kios, Batam" },
+    "sariDewi": { "quote": "\"Lemari custom yang dibuat pas dengan ruang kamar saya. Hasil akhir sangat memuaskan, harga kompetitif.\"", "role": "Penghuni Apartemen" },
+    "majuBersama": { "quote": "\"Interior kantor kami sekarang terlihat lebih profesional. Kionix bekerja tepat waktu sesuai perjanjian.\"", "role": "Pemilik Kantor, Batam" }
+  },
+  "kontak": {
+    "eyebrow": "HUBUNGI KAMI",
+    "titleLine1": "Mulai Proyek",
+    "titleLine2": "Impian Anda",
+    "hours": "Senin–Sabtu: 08.00–17.00 WIB",
+    "cta": "Mulai Proyek Anda →",
+    "waMessage": "Halo Kionix, saya {name}, ingin konsultasi"
+  },
+  "waModal": {
+    "heading": "Mulai Konsultasi",
+    "subtitle": "Isi data Anda, kami lanjutkan di WhatsApp.",
+    "namePlaceholder": "Nama Anda",
+    "phonePlaceholder": "No. WhatsApp",
+    "cancel": "Batal",
+    "submit": "Lanjut →"
+  },
+  "floatingWa": {
+    "ariaLabel": "Chat via WhatsApp",
+    "tooltip": "Chat Sekarang"
+  },
+  "seo": {
+    "title": "Kionix Interior — Batam",
+    "description": "Spesialis interior rumah, kantor, apartemen & hotel di Batam",
+    "keywords": ["jasa interior batam", "desain interior batam", "kontraktor interior batam", "interior rumah batam", "interior kantor batam", "interior apartemen batam", "interior hotel batam", "kitchen set batam", "lemari custom batam", "kionix interior"]
+  }
+}

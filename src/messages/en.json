@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "layanan": "SERVICES",
+    "portfolio": "PORTFOLIO",
+    "tentang": "ABOUT",
+    "kontak": "CONTACT",
+    "cta": "Free Consultation →"
+  },
+  "hero": {
+    "eyebrow": "INTERIOR DESIGN SERVICES BATAM",
+    "tagline": "Bring Your Dream Space to Life",
+    "subtitle": "Interior specialists for homes, offices, apartments & hotels in Batam",
+    "cta": "Free Consultation via WhatsApp →",
+    "scrollCta": "↓ View Our Services"
+  },
+  "layanan": {
+    "eyebrow": "WHAT WE OFFER",
+    "title": "Our Services",
+    "kitchenSet": { "title": "Kitchen Set", "desc": "Custom kitchen set design and installation tailored to your kitchen's size. Premium materials, clean finishing, functional and aesthetic." },
+    "lemariCustom": { "title": "Custom Wardrobe", "desc": "Built-in cabinets and custom wardrobes tailored to your space and taste." },
+    "backdropTv": { "title": "TV Backdrop", "desc": "Elegant TV wall panels that become a stunning focal point in your living room." },
+    "hotelApartemen": { "title": "Hotel & Apartment", "desc": "Complete interior solutions for commercial properties — hotels, apartments, villas, and resorts. We deliver aesthetics aligned with your brand identity." },
+    "renovasiRumah": { "title": "Home Renovation", "desc": "Full or partial renovation with modern concepts and quality materials." },
+    "interiorKantor": { "title": "Office Interior", "desc": "Professional workspaces that boost productivity and elevate your business image." }
+  },
+  "portfolio": {
+    "eyebrow": "OUR WORK",
+    "title": "Our Portfolio",
+    "close": "Close",
+    "kitchenSet": { "title": "Kitchen Set", "category": "KITCHEN" },
+    "kamarTidur": { "title": "Bedroom", "category": "BEDROOM" },
+    "ruangTamu": { "title": "Living Room", "category": "LIVING ROOM" },
+    "kantorModern": { "title": "Modern Office", "category": "OFFICE" },
+    "backdropTv": { "title": "TV Backdrop", "category": "FEATURE WALL" },
+    "retailBooth": { "title": "Retail Booth", "category": "RETAIL" },
+    "lemariCustom": { "title": "Custom Wardrobe", "category": "STORAGE" },
+    "apartemen": { "title": "Apartment", "category": "RESIDENTIAL" },
+    "renovasi": { "title": "Renovation", "category": "RENOVATION" }
+  },
+  "tentang": {
+    "eyebrow": "ABOUT US",
+    "title": "About Kionix Interior",
+    "desc": "Kionix Interior is here to bring your dream space to life in Batam. With an experienced team and a commitment to quality, we deliver interior solutions that blend premium aesthetics with everyday practicality.",
+    "statProjects": "Projects Completed",
+    "statClients": "Satisfied Clients",
+    "statArea": "Service Area"
+  },
+  "klien": {
+    "eyebrow": "OUR CLIENTS",
+    "title": "Trusted By"
+  },
+  "testimoni": {
+    "eyebrow": "TESTIMONIALS",
+    "title": "What Our Clients Say",
+    "lamoist": { "quote": "\"Very satisfied with the results. The design matched exactly what we wanted, the finishing was neat, installation was fast, and material quality was excellent. Communication throughout the project was smooth so everything ran without issues. Kios Lamoist now looks more premium and catches customers' attention. Highly recommended!\"", "role": "Shop Owner, Batam" },
+    "sariDewi": { "quote": "\"The custom wardrobe was made to fit perfectly with my room. The final result was very satisfying, and the price was competitive.\"", "role": "Apartment Resident" },
+    "majuBersama": { "quote": "\"Our office interior now looks more professional. Kionix worked on time as agreed.\"", "role": "Office Owner, Batam" }
+  },
+  "kontak": {
+    "eyebrow": "CONTACT US",
+    "titleLine1": "Start Your",
+    "titleLine2": "Dream Project",
+    "hours": "Monday–Saturday: 08:00–17:00 WIB",
+    "cta": "Start Your Project →",
+    "waMessage": "Hello Kionix, I'm {name}, I'd like a consultation"
+  },
+  "waModal": {
+    "heading": "Start a Consultation",
+    "subtitle": "Fill in your details, we'll continue on WhatsApp.",
+    "namePlaceholder": "Your Name",
+    "phonePlaceholder": "WhatsApp Number",
+    "cancel": "Cancel",
+    "submit": "Continue →"
+  },
+  "floatingWa": {
+    "ariaLabel": "Chat via WhatsApp",
+    "tooltip": "Chat Now"
+  },
+  "seo": {
+    "title": "Kionix Interior — Interior Design in Batam",
+    "description": "Interior design specialists for homes, offices, apartments & hotels in Batam, Indonesia",
+    "keywords": ["interior design batam", "batam interior designer", "kitchen set batam", "custom wardrobe batam", "office interior batam", "apartment interior batam", "hotel interior batam", "home renovation batam", "kionix interior", "interior contractor batam"]
+  }
+}

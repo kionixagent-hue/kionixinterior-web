@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Cormorant_Garamond, Plus_Jakarta_Sans, Noto_Sans_SC } from "next/font/google";
 import { routing } from '@/i18n/routing';
@@ -31,42 +31,47 @@ const notoSansSC = Noto_Sans_SC({
   display: "swap",
 });
 
-const title = "Kionix Interior — Batam";
-const description = "Spesialis interior rumah, kantor, apartemen & hotel di Batam";
 const ogImage = "/og-image.jpg";
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://kionixinterior.com"),
-  title,
-  description,
-  keywords: [
-    "jasa interior batam",
-    "desain interior batam",
-    "kontraktor interior batam",
-    "interior rumah batam",
-    "interior kantor batam",
-    "interior apartemen batam",
-    "interior hotel batam",
-    "kitchen set batam",
-    "lemari custom batam",
-    "kionix interior",
-  ],
-  openGraph: {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('title');
+  const description = t('description');
+
+  return {
+    metadataBase: new URL("https://kionixinterior.com"),
     title,
     description,
-    url: "https://kionixinterior.com",
-    siteName: "Kionix Interior",
-    images: [{ url: ogImage, width: 1200, height: 630 }],
-    locale: "id_ID",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title,
-    description,
-    images: [ogImage],
-  },
-};
+    keywords: t.raw('keywords') as string[],
+    alternates: {
+      languages: {
+        id: 'https://kionixinterior.com',
+        en: 'https://kionixinterior.com/en',
+        zh: 'https://kionixinterior.com/zh',
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: locale === 'id' ? 'https://kionixinterior.com' : `https://kionixinterior.com/${locale}`,
+      siteName: "Kionix Interior",
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+      locale: locale === 'id' ? 'id_ID' : locale === 'zh' ? 'zh_CN' : 'en_US',
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

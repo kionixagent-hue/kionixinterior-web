@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Menu, X } from 'lucide-react'
 import { openWaModal } from '@/components/WaLeadModal'
+import LocaleSwitcher from '@/components/LocaleSwitcher'
 
 const navKeys = ['layanan', 'portfolio', 'tentang', 'kontak'] as const
 const navHrefs: Record<(typeof navKeys)[number], string> = {
@@ -51,13 +52,16 @@ export default function Navbar() {
         ))}
       </ul>
 
-      <button
-        type="button"
-        onClick={() => openWaModal('navbar-desktop')}
-        className="hidden md:inline-flex items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
-      >
-        {t('cta')}
-      </button>
+      <div className="hidden md:flex items-center gap-6">
+        <LocaleSwitcher />
+        <button
+          type="button"
+          onClick={() => openWaModal('navbar-desktop')}
+          className="inline-flex items-center bg-accent hover:bg-accent-hover text-text-on-dark font-sans font-bold text-xs px-6 py-3 rounded transition-colors"
+        >
+          {t('cta')}
+        </button>
+      </div>
 
       <button
         className="md:hidden p-2 text-bg-dark"
@@ -81,6 +85,9 @@ export default function Navbar() {
                 </a>
               </li>
             ))}
+            <li className="px-5 pt-3">
+              <LocaleSwitcher />
+            </li>
             <li className="px-5 pt-3">
               <button
                 type="button"

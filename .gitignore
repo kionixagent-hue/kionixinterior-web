@@ -37,3 +37,9 @@ next-env.d.ts
 
 # gaspol scratch
 .gaspol/
+
+# claude code local state
+.claude/
+
+# production compose file has inline secrets, lives only on the server
+docker-compose.prod.yml

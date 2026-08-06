@@ -76,6 +76,14 @@
     "ariaLabel": "Chat via WhatsApp",
     "tooltip": "Chat Sekarang"
   },
+  "blog": {
+    "eyebrow": "ARTIKEL & INSPIRASI",
+    "title": "Blog Kionix Interior",
+    "filterAll": "Semua",
+    "empty": "Belum ada artikel.",
+    "ctaBandTitle": "Butuh Bantuan Desain Interior?",
+    "ctaBandButton": "Konsultasi Gratis via WhatsApp →"
+  },
   "seo": {
     "title": "Kionix Interior — Batam",
     "description": "Spesialis interior rumah, kantor, apartemen & hotel di Batam",

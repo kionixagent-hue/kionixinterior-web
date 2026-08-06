@@ -76,6 +76,14 @@
     "ariaLabel": "通过WhatsApp聊天",
     "tooltip": "立即聊天"
   },
+  "blog": {
+    "eyebrow": "文章与灵感",
+    "title": "Kionix Interior 博客",
+    "filterAll": "全部",
+    "empty": "暂无文章。",
+    "ctaBandTitle": "需要室内设计帮助吗？",
+    "ctaBandButton": "通过WhatsApp免费咨询 →"
+  },
   "seo": {
     "title": "Kionix Interior — 巴淡岛室内设计",
     "description": "巴淡岛住宅、办公室、公寓与酒店室内设计专家",

@@ -1,0 +1,15 @@
+import { generateSlug } from '@/lib/blog/slug'
+
+describe('generateSlug', () => {
+  it('slugifies a title', () => {
+    expect(generateSlug('Tips Interior Minimalis Batam!')).toBe('tips-interior-minimalis-batam')
+  })
+
+  it('collapses repeated separators and trims edges', () => {
+    expect(generateSlug('  Kitchen Set -- Custom!!  ')).toBe('kitchen-set-custom')
+  })
+
+  it('does not crash on an empty title', () => {
+    expect(generateSlug('')).toBe('')
+  })
+})

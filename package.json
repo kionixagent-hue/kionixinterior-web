@@ -6,15 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "admin:create": "node scripts/create-admin.js"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.2",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.21.0",
     "next": "14.2.35",
     "next-intl": "^4.13.4",
+    "postgres": "^3.4.9",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -23,6 +29,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "jest": "^30.4.2",

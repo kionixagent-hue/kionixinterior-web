@@ -33,7 +33,7 @@ jest.mock('@/lib/db/client', () => ({
         }
       },
     }),
-    update: (table: unknown) => ({
+    update: () => ({
       set: (vals: unknown) => {
         updateSetMock(vals)
         return {

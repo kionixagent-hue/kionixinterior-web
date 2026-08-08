@@ -71,6 +71,18 @@ describe('insertImageAfterSection', () => {
     expect(reparsed).toHaveLength(2)
     expect(reparsed[1].hasImage).toBe(true)
   })
+
+  it('only modifies the targeted section when two sections have identical raw text', () => {
+    const duplicateBody = `## Tip One\n\nSame long enough content repeated in both sections here.\n\n## Tip One\n\nSame long enough content repeated in both sections here.`
+    const sections = splitSections(duplicateBody)
+    expect(sections).toHaveLength(2)
+
+    const updated = insertImageAfterSection(duplicateBody, sections[1], '![Tip One](https://x/2.jpg)')
+    const reparsed = splitSections(updated)
+
+    expect(reparsed[0].hasImage).toBe(false)
+    expect(reparsed[1].hasImage).toBe(true)
+  })
 })
 
 describe('buildSectionImagePrompt', () => {

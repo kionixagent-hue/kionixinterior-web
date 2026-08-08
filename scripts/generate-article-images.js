@@ -93,9 +93,15 @@ async function main() {
     for (const locale of ['id', 'en']) {
       const marker = img.insertBefore[locale]
       const markdown = `\n\n![${img.alt[locale]}](${url})${marker}`
+      // ponytail: Postgres replace() rewrites every occurrence of `marker`, not just one —
+      // do the substitution in JS (String.replace with a string pattern hits only the
+      // first match) and write the whole body back, so a repeated marker can't duplicate.
+      const [current] = await sql`
+        select body from article_translations where article_id = ${articleId} and locale = ${locale}
+      `
       await sql`
         update article_translations
-        set body = replace(body, ${marker}, ${markdown})
+        set body = ${current.body.replace(marker, markdown)}
         where article_id = ${articleId} and locale = ${locale}
       `
     }

@@ -4,7 +4,17 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import ArticleStatusBadge, { type ArticleStatus } from '@/components/admin/ArticleStatusBadge'
-import { updateArticleTranslation, publishArticle, rejectArticle } from '@/app/admin/actions'
+import {
+  updateArticleTranslation,
+  publishArticle,
+  rejectArticle,
+  updateCoverImage,
+  generateCoverImage,
+  generateBodySectionImage,
+} from '@/app/admin/actions'
+import { buildCoverPrompt } from '@/lib/images/sections'
+import CoverImageField from '@/components/admin/CoverImageField'
+import GenerateImagesButton from '@/components/admin/GenerateImagesButton'
 
 type FaqRow = { q: string; a: string }
 type Translation = {
@@ -18,6 +28,7 @@ type Translation = {
 type Article = {
   id: string
   status: ArticleStatus
+  coverImageUrl: string | null
   translations: Translation[]
 }
 
@@ -30,8 +41,16 @@ export default function EditForm({ article }: { article: Article }) {
   })
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [coverImageUrl, setCoverImageUrl] = useState(article.coverImageUrl)
 
   const current = forms[activeLocale]
+  const idTranslation = forms.id
+  const coverPrompt = buildCoverPrompt(idTranslation?.title ?? '', idTranslation?.quickAnswer ?? '')
+
+  async function handleCoverGenerated(url: string) {
+    setCoverImageUrl(url)
+    await updateCoverImage(article.id, url)
+  }
 
   function updateCurrent(fields: Partial<Translation>) {
     setForms((prev) => ({ ...prev, [activeLocale]: prev[activeLocale] ? { ...prev[activeLocale]!, ...fields } : prev[activeLocale] }))
@@ -111,6 +130,15 @@ export default function EditForm({ article }: { article: Article }) {
         ))}
       </div>
 
+      <div className="mb-6">
+        <CoverImageField
+          initialPrompt={coverPrompt}
+          initialUrl={coverImageUrl}
+          onGenerate={generateCoverImage}
+          onGenerated={handleCoverGenerated}
+        />
+      </div>
+
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <label className="flex flex-col gap-1 text-sm text-text-muted">
@@ -139,6 +167,13 @@ export default function EditForm({ article }: { article: Article }) {
               className="rounded border border-border px-3 py-2 font-mono text-sm text-bg-dark outline-none focus:border-accent"
             />
           </label>
+
+          <GenerateImagesButton
+            body={current.body}
+            onBodyChange={(body) => updateCurrent({ body })}
+            onGenerate={generateBodySectionImage}
+          />
+
           <label className="flex flex-col gap-1 text-sm text-text-muted">
             Meta Description
             <input

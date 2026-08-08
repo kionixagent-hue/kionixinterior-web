@@ -20,6 +20,18 @@ describe('CoverImageField', () => {
     expect(screen.getByRole('button', { name: 'Regenerate' })).toBeInTheDocument()
   })
 
+  it('follows a changing initialPrompt until the admin edits it directly', () => {
+    const { rerender } = render(<CoverImageField initialPrompt="" onGenerate={jest.fn()} />)
+    expect(screen.getByRole('textbox')).toHaveValue('')
+
+    rerender(<CoverImageField initialPrompt="A cozy room" onGenerate={jest.fn()} />)
+    expect(screen.getByRole('textbox')).toHaveValue('A cozy room')
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'My own prompt' } })
+    rerender(<CoverImageField initialPrompt="An updated suggestion" onGenerate={jest.fn()} />)
+    expect(screen.getByRole('textbox')).toHaveValue('My own prompt')
+  })
+
   it('shows an alert and re-enables the button when generation fails', async () => {
     const onGenerate = jest.fn().mockRejectedValue(new Error('API down'))
     render(<CoverImageField initialPrompt="A cozy room" onGenerate={onGenerate} />)

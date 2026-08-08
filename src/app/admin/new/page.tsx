@@ -1,8 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createDraftArticle, type TranslationInput } from '@/app/admin/actions'
+import { createDraftArticle, generateCoverImage, generateBodySectionImage, type TranslationInput } from '@/app/admin/actions'
+import { buildCoverPrompt } from '@/lib/images/sections'
+import CoverImageField from '@/components/admin/CoverImageField'
+import GenerateImagesButton from '@/components/admin/GenerateImagesButton'
 
 type FaqRow = { q: string; a: string }
 type LocaleForm = Omit<TranslationInput, 'locale' | 'faq'> & { faq: FaqRow[] }
@@ -59,6 +62,12 @@ function LocaleFieldset({
         />
       </label>
 
+      <GenerateImagesButton
+        body={value.body}
+        onBodyChange={(body) => onChange({ ...value, body })}
+        onGenerate={generateBodySectionImage}
+      />
+
       <label className="flex flex-col gap-1 text-sm text-text-muted">
         Meta Description
         <input
@@ -111,8 +120,11 @@ export default function NewArticlePage() {
   const [tags, setTags] = useState('')
   const [id, setId] = useState<LocaleForm>(EMPTY_LOCALE_FORM)
   const [en, setEn] = useState<LocaleForm>(EMPTY_LOCALE_FORM)
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const coverPrompt = useMemo(() => buildCoverPrompt(id.title, id.quickAnswer), [id.title, id.quickAnswer])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -122,6 +134,7 @@ export default function NewArticlePage() {
     try {
       const articleId = await createDraftArticle({
         tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
+        coverImageUrl: coverImageUrl ?? undefined,
         translations: [
           { locale: 'id', ...id },
           { locale: 'en', ...en },
@@ -145,15 +158,23 @@ export default function NewArticlePage() {
           </p>
         )}
 
-        <label className="flex flex-col gap-1 text-sm text-text-muted">
-          Tag (pisahkan dengan koma)
-          <input
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="kitchen-set, tips, batam"
-            className="rounded border border-border px-3 py-2 text-bg-dark outline-none focus:border-accent"
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label className="flex flex-col gap-1 text-sm text-text-muted">
+            Tag (pisahkan dengan koma)
+            <input
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="kitchen-set, tips, batam"
+              className="rounded border border-border px-3 py-2 text-bg-dark outline-none focus:border-accent"
+            />
+          </label>
+
+          <CoverImageField
+            initialPrompt={coverPrompt}
+            onGenerate={generateCoverImage}
+            onGenerated={setCoverImageUrl}
           />
-        </label>
+        </div>
 
         <LocaleFieldset label="Bahasa Indonesia" value={id} onChange={setId} />
         <LocaleFieldset label="English" value={en} onChange={setEn} />

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type Props = {
   initialPrompt: string
@@ -13,8 +13,16 @@ type GenState = { status: 'idle' } | { status: 'running' } | { status: 'error'; 
 
 export default function CoverImageField({ initialPrompt, initialUrl, onGenerate, onGenerated }: Props) {
   const [prompt, setPrompt] = useState(initialPrompt)
+  const [touched, setTouched] = useState(false)
   const [url, setUrl] = useState(initialUrl ?? null)
   const [gen, setGen] = useState<GenState>({ status: 'idle' })
+
+  // Follow `initialPrompt` (e.g. a title/quick-answer-derived suggestion recomputed by
+  // the parent as the admin types) until the admin edits this field directly — then
+  // their edit wins and auto-suggestion stops overwriting it.
+  useEffect(() => {
+    if (!touched) setPrompt(initialPrompt)
+  }, [initialPrompt, touched])
 
   async function handleGenerate() {
     setGen({ status: 'running' })
@@ -35,7 +43,10 @@ export default function CoverImageField({ initialPrompt, initialUrl, onGenerate,
         <textarea
           rows={2}
           value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          onChange={(e) => {
+            setTouched(true)
+            setPrompt(e.target.value)
+          }}
           className="rounded border border-border px-2 py-1 text-sm text-bg-dark outline-none focus:border-accent"
         />
         <div className="flex items-center gap-2">

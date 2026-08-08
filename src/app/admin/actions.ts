@@ -8,6 +8,7 @@ import { articles, articleTranslations } from '@/lib/db/schema'
 import { generateSlug } from '@/lib/blog/slug'
 import { nextStatus } from '@/lib/blog/status'
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth/session'
+import { generateImage } from '@/lib/images/snapgen'
 
 async function requireUser() {
   const cookieStore = await cookies()
@@ -26,7 +27,11 @@ export type TranslationInput = {
   faq: { q: string; a: string }[]
 }
 
-export async function createDraftArticle(input: { tags: string[]; translations: TranslationInput[] }) {
+export async function createDraftArticle(input: {
+  tags: string[]
+  coverImageUrl?: string
+  translations: TranslationInput[]
+}) {
   await requireUser()
 
   const locales = input.translations.map((t) => t.locale)
@@ -39,7 +44,10 @@ export async function createDraftArticle(input: { tags: string[]; translations: 
     }
   }
 
-  const [article] = await db.insert(articles).values({ tags: input.tags, status: 'draft' }).returning()
+  const [article] = await db
+    .insert(articles)
+    .values({ tags: input.tags, status: 'draft', coverImageUrl: input.coverImageUrl })
+    .returning()
 
   for (const t of input.translations) {
     await db.insert(articleTranslations).values({
@@ -119,4 +127,22 @@ export async function rejectArticle(articleId: string) {
 
   revalidatePath(`/admin/${articleId}`)
   revalidatePath('/admin')
+}
+
+export async function generateCoverImage(prompt: string): Promise<string> {
+  await requireUser()
+  return generateImage(process.env.SNAPGEN_API_KEY!, { prompt, aspect_ratio: '16:9' })
+}
+
+export async function generateBodySectionImage(prompt: string): Promise<string> {
+  await requireUser()
+  return generateImage(process.env.SNAPGEN_API_KEY!, { prompt, aspect_ratio: '4:3' })
+}
+
+export async function updateCoverImage(articleId: string, url: string) {
+  await requireUser()
+
+  await db.update(articles).set({ coverImageUrl: url, updatedAt: new Date() }).where(eq(articles.id, articleId))
+
+  revalidatePath(`/admin/${articleId}`)
 }

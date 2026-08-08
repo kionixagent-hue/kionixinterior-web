@@ -60,6 +60,16 @@ describe('EditForm — images', () => {
     await waitFor(() => expect(updateCoverImageMock).toHaveBeenCalledWith('article-1', 'https://x/new-cover.jpg'))
   })
 
+  it('surfaces an error when the generated cover fails to persist', async () => {
+    generateCoverImageMock.mockResolvedValue('https://x/new-cover.jpg')
+    updateCoverImageMock.mockRejectedValue(new Error('Unauthorized'))
+    render(<EditForm article={baseArticle} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Cover' }))
+
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/gagal disimpan/i))
+  })
+
   it('renders exactly one Generate Images button for the active locale', () => {
     render(<EditForm article={baseArticle} />)
     expect(screen.getAllByRole('button', { name: 'Generate Images' })).toHaveLength(1)

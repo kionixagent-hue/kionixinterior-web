@@ -129,14 +129,20 @@ export async function rejectArticle(articleId: string) {
   revalidatePath('/admin')
 }
 
+function requireSnapgenApiKey(): string {
+  const key = process.env.SNAPGEN_API_KEY
+  if (!key) throw new Error('SNAPGEN_API_KEY is not set')
+  return key
+}
+
 export async function generateCoverImage(prompt: string): Promise<string> {
   await requireUser()
-  return generateImage(process.env.SNAPGEN_API_KEY!, { prompt, aspect_ratio: '16:9' })
+  return generateImage(requireSnapgenApiKey(), { prompt, aspect_ratio: '16:9' })
 }
 
 export async function generateBodySectionImage(prompt: string): Promise<string> {
   await requireUser()
-  return generateImage(process.env.SNAPGEN_API_KEY!, { prompt, aspect_ratio: '4:3' })
+  return generateImage(requireSnapgenApiKey(), { prompt, aspect_ratio: '4:3' })
 }
 
 export async function updateCoverImage(articleId: string, url: string) {

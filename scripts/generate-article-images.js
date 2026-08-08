@@ -99,6 +99,9 @@ async function main() {
       const [current] = await sql`
         select body from article_translations where article_id = ${articleId} and locale = ${locale}
       `
+      if (!current.body.includes(marker)) {
+        throw new Error(`marker not found in ${locale} body, nothing inserted: ${JSON.stringify(marker)}`)
+      }
       await sql`
         update article_translations
         set body = ${current.body.replace(marker, markdown)}

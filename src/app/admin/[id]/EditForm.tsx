@@ -42,6 +42,7 @@ export default function EditForm({ article }: { article: Article }) {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [coverImageUrl, setCoverImageUrl] = useState(article.coverImageUrl)
+  const [coverSaveError, setCoverSaveError] = useState<string | null>(null)
 
   const current = forms[activeLocale]
   const idTranslation = forms.id
@@ -49,7 +50,14 @@ export default function EditForm({ article }: { article: Article }) {
 
   async function handleCoverGenerated(url: string) {
     setCoverImageUrl(url)
-    await updateCoverImage(article.id, url)
+    setCoverSaveError(null)
+    try {
+      await updateCoverImage(article.id, url)
+    } catch {
+      // CoverImageField already shows the new image locally — without this, a failed
+      // persist (expired session, DB error) would look saved when it wasn't.
+      setCoverSaveError('Gambar berhasil dibuat tapi gagal disimpan. Coba klik Regenerate lagi.')
+    }
   }
 
   function updateCurrent(fields: Partial<Translation>) {
@@ -137,6 +145,11 @@ export default function EditForm({ article }: { article: Article }) {
           onGenerate={generateCoverImage}
           onGenerated={handleCoverGenerated}
         />
+        {coverSaveError && (
+          <p role="alert" className="mt-1 text-xs text-red-600">
+            {coverSaveError}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">

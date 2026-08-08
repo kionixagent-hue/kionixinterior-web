@@ -39,6 +39,29 @@ describe('GenerateImagesButton', () => {
     expect(reparsed[1].hasImage).toBe(true)
   })
 
+  it('resolves each section by position, not heading text, so duplicate headings do not collide', async () => {
+    const duplicateBody = `## Tip One\n\nSame long enough content repeated in both sections here easily.\n\n## Tip One\n\nDifferent long enough content in the second section, also past forty chars.`
+    const onGenerate = jest
+      .fn()
+      .mockResolvedValueOnce('https://x/1.jpg')
+      .mockResolvedValueOnce('https://x/2.jpg')
+    const onBodyChange = jest.fn()
+
+    render(<GenerateImagesButton body={duplicateBody} onBodyChange={onBodyChange} onGenerate={onGenerate} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Images' }))
+
+    await waitFor(() => expect(onGenerate).toHaveBeenCalledTimes(2))
+
+    const finalBody = onBodyChange.mock.calls[onBodyChange.mock.calls.length - 1][0]
+    const reparsed = splitSections(finalBody)
+    expect(reparsed).toHaveLength(2)
+    expect(reparsed[0].hasImage).toBe(true)
+    expect(reparsed[1].hasImage).toBe(true)
+    // each image landed in its own section's content, not both stacked on the first
+    expect(reparsed[0].content).not.toContain('https://x/2.jpg')
+    expect(reparsed[1].content).not.toContain('https://x/1.jpg')
+  })
+
   it('keeps a successful section when another section fails, and reports the error', async () => {
     const onGenerate = jest
       .fn()

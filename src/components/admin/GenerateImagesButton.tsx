@@ -20,26 +20,30 @@ export default function GenerateImagesButton({ body, onBodyChange, onGenerate }:
     setRunning(true)
     setErrors([])
 
-    // Snapshot which headings to illustrate and in what order, but re-parse the body
-    // fresh before each insert — earlier inserts shift character offsets for every
-    // section after them, so reusing a Section object computed before the loop
-    // started would insert at a stale position.
-    const headings = qualifying.map((s) => s.heading)
+    // `qualifying` holds each section's start offset against the ORIGINAL `body`.
+    // Inserting an image only ever appends at the END of a section's block (right
+    // before the next heading), so it never touches any section's own content —
+    // it just pushes every later section forward by however many characters were
+    // added. Tracking that cumulative `shift` and applying it to each target's
+    // start offset stays correct even if two sections share the same heading text
+    // (unlike matching by heading, which would misresolve for duplicates).
     let currentBody = body
+    let shift = 0
     const nextErrors: string[] = []
 
-    for (let i = 0; i < headings.length; i++) {
-      setProgress({ current: i + 1, total: headings.length })
-      const heading = headings[i]
-      const freshSection = splitSections(currentBody).find((s) => s.heading === heading && !s.hasImage)
-      if (!freshSection) continue
+    for (let i = 0; i < qualifying.length; i++) {
+      setProgress({ current: i + 1, total: qualifying.length })
+      const target = qualifying[i]
+      const section = { ...target, start: target.start + shift }
 
       try {
-        const url = await onGenerate(buildSectionImagePrompt(heading))
-        currentBody = insertImageAfterSection(currentBody, freshSection, `![${heading}](${url})`)
+        const url = await onGenerate(buildSectionImagePrompt(section.heading))
+        const beforeLength = currentBody.length
+        currentBody = insertImageAfterSection(currentBody, section, `![${section.heading}](${url})`)
+        shift += currentBody.length - beforeLength
         onBodyChange(currentBody)
       } catch {
-        nextErrors.push(`Gagal membuat gambar untuk "${heading}".`)
+        nextErrors.push(`Gagal membuat gambar untuk "${section.heading}".`)
       }
     }
 

@@ -7,9 +7,15 @@ type Props = {
   body: string
   onBodyChange: (nextBody: string) => void
   onGenerate: (prompt: string) => Promise<string>
+  // Lets the caller disable the Body textarea while this runs — each image can take
+  // up to ~60s, and this component tracks its own `currentBody` snapshot from
+  // click-time, so a concurrent edit to `body` elsewhere would get silently
+  // overwritten by the next insert. Disabling input during the run is simpler and
+  // safer than trying to merge concurrent edits.
+  onRunningChange?: (running: boolean) => void
 }
 
-export default function GenerateImagesButton({ body, onBodyChange, onGenerate }: Props) {
+export default function GenerateImagesButton({ body, onBodyChange, onGenerate, onRunningChange }: Props) {
   const [running, setRunning] = useState(false)
   const [progress, setProgress] = useState<{ current: number; total: number } | null>(null)
   const [errors, setErrors] = useState<string[]>([])
@@ -18,6 +24,7 @@ export default function GenerateImagesButton({ body, onBodyChange, onGenerate }:
 
   async function handleClick() {
     setRunning(true)
+    onRunningChange?.(true)
     setErrors([])
 
     // `qualifying` holds each section's start offset against the ORIGINAL `body`.
@@ -50,6 +57,7 @@ export default function GenerateImagesButton({ body, onBodyChange, onGenerate }:
     setErrors(nextErrors)
     setProgress(null)
     setRunning(false)
+    onRunningChange?.(false)
   }
 
   return (

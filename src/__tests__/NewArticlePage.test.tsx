@@ -39,6 +39,19 @@ describe('NewArticlePage', () => {
     expect(screen.getAllByRole('button', { name: 'Generate Images' })).toHaveLength(2)
   })
 
+  it('disables Submit while a cover generation is in flight', async () => {
+    let resolveGenerate: (url: string) => void = () => {}
+    generateCoverImageMock.mockReturnValue(new Promise<string>((r) => (resolveGenerate = r)))
+    render(<NewArticlePage />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Cover' }))
+
+    await waitFor(() => expect(screen.getByRole('button', { name: /Menunggu gambar/ })).toBeDisabled())
+
+    resolveGenerate('https://x/cover.jpg')
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Simpan Draft' })).not.toBeDisabled())
+  })
+
   it('includes the generated cover url when submitting the draft', async () => {
     generateCoverImageMock.mockResolvedValue('https://x/cover.jpg')
     render(<NewArticlePage />)

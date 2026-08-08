@@ -16,11 +16,20 @@ function LocaleFieldset({
   label,
   value,
   onChange,
+  onGeneratingChange,
 }: {
   label: string
   value: LocaleForm
   onChange: (next: LocaleForm) => void
+  onGeneratingChange?: (generating: boolean) => void
 }) {
+  const [bodyGenerating, setBodyGenerating] = useState(false)
+
+  function handleRunningChange(running: boolean) {
+    setBodyGenerating(running)
+    onGeneratingChange?.(running)
+  }
+
   function updateFaq(index: number, key: keyof FaqRow, text: string) {
     const faq = value.faq.map((row, i) => (i === index ? { ...row, [key]: text } : row))
     onChange({ ...value, faq })
@@ -58,7 +67,8 @@ function LocaleFieldset({
           rows={10}
           value={value.body}
           onChange={(e) => onChange({ ...value, body: e.target.value })}
-          className="rounded border border-border px-3 py-2 font-mono text-sm text-bg-dark outline-none focus:border-accent"
+          readOnly={bodyGenerating}
+          className={`rounded border border-border px-3 py-2 font-mono text-sm text-bg-dark outline-none focus:border-accent ${bodyGenerating ? 'opacity-50' : ''}`}
         />
       </label>
 
@@ -66,6 +76,7 @@ function LocaleFieldset({
         body={value.body}
         onBodyChange={(body) => onChange({ ...value, body })}
         onGenerate={generateBodySectionImage}
+        onRunningChange={handleRunningChange}
       />
 
       <label className="flex flex-col gap-1 text-sm text-text-muted">
@@ -121,10 +132,17 @@ export default function NewArticlePage() {
   const [id, setId] = useState<LocaleForm>(EMPTY_LOCALE_FORM)
   const [en, setEn] = useState<LocaleForm>(EMPTY_LOCALE_FORM)
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null)
+  const [coverGenerating, setCoverGenerating] = useState(false)
+  const [idBodyGenerating, setIdBodyGenerating] = useState(false)
+  const [enBodyGenerating, setEnBodyGenerating] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const coverPrompt = useMemo(() => buildCoverPrompt(id.title, id.quickAnswer), [id.title, id.quickAnswer])
+  // Blocks Submit while any image generation is in flight — without this, submitting
+  // persists the article with no cover/images and the eventual result is discarded
+  // once router.push unmounts the form (generation still costs real API credits).
+  const anyGenerating = coverGenerating || idBodyGenerating || enBodyGenerating
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -173,18 +191,19 @@ export default function NewArticlePage() {
             initialPrompt={coverPrompt}
             onGenerate={generateCoverImage}
             onGenerated={setCoverImageUrl}
+            onGeneratingChange={setCoverGenerating}
           />
         </div>
 
-        <LocaleFieldset label="Bahasa Indonesia" value={id} onChange={setId} />
-        <LocaleFieldset label="English" value={en} onChange={setEn} />
+        <LocaleFieldset label="Bahasa Indonesia" value={id} onChange={setId} onGeneratingChange={setIdBodyGenerating} />
+        <LocaleFieldset label="English" value={en} onChange={setEn} onGeneratingChange={setEnBodyGenerating} />
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || anyGenerating}
           className="w-fit rounded bg-accent px-6 py-3 font-sans font-bold text-text-on-dark hover:bg-accent-hover disabled:opacity-50"
         >
-          {submitting ? 'Menyimpan...' : 'Simpan Draft'}
+          {submitting ? 'Menyimpan...' : anyGenerating ? 'Menunggu gambar selesai dibuat...' : 'Simpan Draft'}
         </button>
       </form>
     </main>

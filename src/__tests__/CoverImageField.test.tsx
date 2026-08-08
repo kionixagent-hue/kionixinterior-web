@@ -32,6 +32,26 @@ describe('CoverImageField', () => {
     expect(screen.getByRole('textbox')).toHaveValue('My own prompt')
   })
 
+  it('reports generating state via onGeneratingChange, including on failure', async () => {
+    let rejectGenerate: (err: Error) => void = () => {}
+    const onGenerate = jest.fn().mockReturnValue(new Promise<string>((_, rej) => (rejectGenerate = rej)))
+    const onGeneratingChange = jest.fn()
+
+    render(<CoverImageField initialPrompt="A room" onGenerate={onGenerate} onGeneratingChange={onGeneratingChange} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Cover' }))
+
+    await waitFor(() => expect(onGeneratingChange).toHaveBeenCalledWith(true))
+    expect(onGeneratingChange).not.toHaveBeenCalledWith(false)
+
+    rejectGenerate(new Error('boom'))
+    await waitFor(() => expect(onGeneratingChange).toHaveBeenLastCalledWith(false))
+  })
+
+  it('exposes an accessible name for the prompt textarea', () => {
+    render(<CoverImageField initialPrompt="A room" onGenerate={jest.fn()} />)
+    expect(screen.getByRole('textbox', { name: 'Cover Image' })).toBeInTheDocument()
+  })
+
   it('shows an alert and re-enables the button when generation fails', async () => {
     const onGenerate = jest.fn().mockRejectedValue(new Error('API down'))
     render(<CoverImageField initialPrompt="A cozy room" onGenerate={onGenerate} />)

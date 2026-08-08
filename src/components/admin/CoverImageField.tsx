@@ -7,11 +7,15 @@ type Props = {
   initialUrl?: string | null
   onGenerate: (prompt: string) => Promise<string>
   onGenerated?: (url: string) => void
+  // Lets the caller (e.g. disable Submit) know a generation is in flight — without
+  // this, submitting mid-generation persists the article with no cover and silently
+  // discards the eventual result once the form unmounts.
+  onGeneratingChange?: (generating: boolean) => void
 }
 
 type GenState = { status: 'idle' } | { status: 'running' } | { status: 'error'; error: string }
 
-export default function CoverImageField({ initialPrompt, initialUrl, onGenerate, onGenerated }: Props) {
+export default function CoverImageField({ initialPrompt, initialUrl, onGenerate, onGenerated, onGeneratingChange }: Props) {
   const [prompt, setPrompt] = useState(initialPrompt)
   const [touched, setTouched] = useState(false)
   const [url, setUrl] = useState(initialUrl ?? null)
@@ -26,6 +30,7 @@ export default function CoverImageField({ initialPrompt, initialUrl, onGenerate,
 
   async function handleGenerate() {
     setGen({ status: 'running' })
+    onGeneratingChange?.(true)
     try {
       const result = await onGenerate(prompt)
       setUrl(result)
@@ -33,12 +38,14 @@ export default function CoverImageField({ initialPrompt, initialUrl, onGenerate,
       onGenerated?.(result)
     } catch (err) {
       setGen({ status: 'error', error: err instanceof Error ? err.message : 'Gagal membuat gambar.' })
+    } finally {
+      onGeneratingChange?.(false)
     }
   }
 
   return (
     <div className="flex flex-col gap-1 text-sm text-text-muted">
-      <span>Cover Image</span>
+      <span id="cover-image-field-label">Cover Image</span>
       <div className="flex flex-col gap-2 rounded border border-border p-3">
         <textarea
           rows={2}
@@ -47,6 +54,7 @@ export default function CoverImageField({ initialPrompt, initialUrl, onGenerate,
             setTouched(true)
             setPrompt(e.target.value)
           }}
+          aria-labelledby="cover-image-field-label"
           className="rounded border border-border px-2 py-1 text-sm text-bg-dark outline-none focus:border-accent"
         />
         <div className="flex items-center gap-2">

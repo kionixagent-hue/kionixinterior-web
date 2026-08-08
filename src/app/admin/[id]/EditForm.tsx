@@ -43,6 +43,7 @@ export default function EditForm({ article }: { article: Article }) {
   const [message, setMessage] = useState<string | null>(null)
   const [coverImageUrl, setCoverImageUrl] = useState(article.coverImageUrl)
   const [coverSaveError, setCoverSaveError] = useState<string | null>(null)
+  const [bodyGenerating, setBodyGenerating] = useState(false)
 
   const current = forms[activeLocale]
   const idTranslation = forms.id
@@ -177,7 +178,8 @@ export default function EditForm({ article }: { article: Article }) {
               rows={16}
               value={current.body}
               onChange={(e) => updateCurrent({ body: e.target.value })}
-              className="rounded border border-border px-3 py-2 font-mono text-sm text-bg-dark outline-none focus:border-accent"
+              readOnly={bodyGenerating}
+              className={`rounded border border-border px-3 py-2 font-mono text-sm text-bg-dark outline-none focus:border-accent ${bodyGenerating ? 'opacity-50' : ''}`}
             />
           </label>
 
@@ -185,6 +187,7 @@ export default function EditForm({ article }: { article: Article }) {
             body={current.body}
             onBodyChange={(body) => updateCurrent({ body })}
             onGenerate={generateBodySectionImage}
+            onRunningChange={setBodyGenerating}
           />
 
           <label className="flex flex-col gap-1 text-sm text-text-muted">

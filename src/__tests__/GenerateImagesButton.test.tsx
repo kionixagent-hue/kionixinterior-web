@@ -13,6 +13,28 @@ This is the first tip with plenty of content, well over forty characters long.
 This is the second tip, also with plenty of content past the forty char mark.`
 
 describe('GenerateImagesButton', () => {
+  it('reports running state via onRunningChange, including on completion', async () => {
+    let resolveGenerate: (url: string) => void = () => {}
+    const onGenerate = jest.fn().mockReturnValue(new Promise<string>((r) => (resolveGenerate = r)))
+    const onRunningChange = jest.fn()
+
+    render(
+      <GenerateImagesButton
+        body={`## Tip One\n\nLong enough content here to qualify for image generation easily.`}
+        onBodyChange={jest.fn()}
+        onGenerate={onGenerate}
+        onRunningChange={onRunningChange}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Images' }))
+
+    await waitFor(() => expect(onRunningChange).toHaveBeenCalledWith(true))
+    expect(onRunningChange).not.toHaveBeenCalledWith(false)
+
+    resolveGenerate('https://x/1.jpg')
+    await waitFor(() => expect(onRunningChange).toHaveBeenLastCalledWith(false))
+  })
+
   it('is disabled when the body has no qualifying sections', () => {
     render(<GenerateImagesButton body="Just a short intro, no headings." onBodyChange={jest.fn()} onGenerate={jest.fn()} />)
     expect(screen.getByRole('button', { name: 'Generate Images' })).toBeDisabled()

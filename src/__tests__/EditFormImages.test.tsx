@@ -70,6 +70,35 @@ describe('EditForm — images', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/gagal disimpan/i))
   })
 
+  it('makes the Body textarea read-only while body-image generation is running', async () => {
+    let resolveGenerate: (url: string) => void = () => {}
+    generateBodySectionImageMock.mockReturnValue(new Promise<string>((r) => (resolveGenerate = r)))
+    render(
+      <EditForm
+        article={{
+          ...baseArticle,
+          translations: [
+            {
+              locale: 'id',
+              title: 'Judul',
+              quickAnswer: 'Q',
+              body: '## Tip One\n\nLong enough content here to qualify for image generation easily.',
+              metaDescription: 'M',
+              faq: [],
+            },
+            baseArticle.translations[1],
+          ],
+        }}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Images' }))
+    await waitFor(() => expect(screen.getByDisplayValue(/Tip One/)).toHaveAttribute('readonly'))
+
+    resolveGenerate('https://x/1.jpg')
+    await waitFor(() => expect(screen.getByDisplayValue(/Tip One/)).not.toHaveAttribute('readonly'))
+  })
+
   it('renders exactly one Generate Images button for the active locale', () => {
     render(<EditForm article={baseArticle} />)
     expect(screen.getAllByRole('button', { name: 'Generate Images' })).toHaveLength(1)

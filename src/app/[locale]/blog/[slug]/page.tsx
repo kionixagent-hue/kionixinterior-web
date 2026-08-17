@@ -51,6 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       publishedTime: row.article.createdAt.toISOString(),
       modifiedTime: row.article.updatedAt.toISOString(),
+      images: row.article.coverImageUrl ? [row.article.coverImageUrl] : undefined,
     },
   }
 }
@@ -98,6 +99,15 @@ export default async function BlogArticlePage({ params }: Props) {
       </div>
 
       <h1 className="mb-6 font-serif text-4xl font-bold text-bg-dark">{translation.title}</h1>
+
+      {article.coverImageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element -- remote snapgen.ai CDN URL, no next/image domain configured
+        <img
+          src={article.coverImageUrl}
+          alt={translation.title}
+          className="mb-8 aspect-video w-full rounded-xl border border-border object-cover"
+        />
+      )}
 
       <QuickAnswerBox text={translation.quickAnswer} />
 

@@ -47,4 +47,24 @@ describe('BlogIndex', () => {
     renderBlogIndex()
     expect(screen.queryByText('Draft Yang Belum Tayang')).not.toBeInTheDocument()
   })
+
+  it('links to the article without a locale prefix when browsing the default (id) locale', () => {
+    renderBlogIndex()
+    expect(screen.getByText('Tips Kitchen Set Batam').closest('a')).toHaveAttribute(
+      'href',
+      '/blog/tips-kitchen-set-batam'
+    )
+  })
+
+  it('links to the article WITH the /en prefix when browsing the en locale', () => {
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <BlogIndex articles={mockArticles} />
+      </NextIntlClientProvider>
+    )
+    expect(screen.getByText('Tips Kitchen Set Batam').closest('a')).toHaveAttribute(
+      'href',
+      '/en/blog/tips-kitchen-set-batam'
+    )
+  })
 })

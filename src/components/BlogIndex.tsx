@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import TagFilter from './TagFilter'
 import { WHATSAPP_URL } from '@/lib/constants'

@@ -2,6 +2,7 @@ const insertValuesMock = jest.fn()
 const updateSetMock = jest.fn()
 const updateWhereMock = jest.fn()
 const generateImageMock = jest.fn()
+const persistImageLocallyMock = jest.fn()
 const cookiesGetMock = jest.fn()
 const verifySessionTokenMock = jest.fn()
 
@@ -18,6 +19,10 @@ jest.mock('@/lib/auth/session', () => ({
 
 jest.mock('@/lib/images/snapgen', () => ({
   generateImage: (...args: unknown[]) => generateImageMock(...args),
+}))
+
+jest.mock('@/lib/images/storage', () => ({
+  persistImageLocally: (...args: unknown[]) => persistImageLocallyMock(...args),
 }))
 
 jest.mock('@/lib/db/client', () => ({
@@ -63,28 +68,32 @@ describe('auth guard', () => {
 })
 
 describe('generateCoverImage', () => {
-  it('calls generateImage with 16:9 aspect ratio when authorized', async () => {
+  it('calls generateImage with 16:9 aspect ratio, then persists the result locally', async () => {
     cookiesGetMock.mockReturnValue({ value: 'token' })
     verifySessionTokenMock.mockResolvedValue('user-1')
-    generateImageMock.mockResolvedValue('https://x/cover.jpg')
+    generateImageMock.mockResolvedValue('https://snapgen.example/temp-cover.jpg')
+    persistImageLocallyMock.mockResolvedValue('/uploads/cover.jpg')
 
     const url = await generateCoverImage('a cozy room')
 
-    expect(url).toBe('https://x/cover.jpg')
+    expect(url).toBe('/uploads/cover.jpg')
     expect(generateImageMock).toHaveBeenCalledWith('test-key', { prompt: 'a cozy room', aspect_ratio: '16:9' })
+    expect(persistImageLocallyMock).toHaveBeenCalledWith('https://snapgen.example/temp-cover.jpg')
   })
 })
 
 describe('generateBodySectionImage', () => {
-  it('calls generateImage with 4:3 aspect ratio when authorized', async () => {
+  it('calls generateImage with 4:3 aspect ratio, then persists the result locally', async () => {
     cookiesGetMock.mockReturnValue({ value: 'token' })
     verifySessionTokenMock.mockResolvedValue('user-1')
-    generateImageMock.mockResolvedValue('https://x/section.jpg')
+    generateImageMock.mockResolvedValue('https://snapgen.example/temp-section.jpg')
+    persistImageLocallyMock.mockResolvedValue('/uploads/section.jpg')
 
     const url = await generateBodySectionImage('tip one')
 
-    expect(url).toBe('https://x/section.jpg')
+    expect(url).toBe('/uploads/section.jpg')
     expect(generateImageMock).toHaveBeenCalledWith('test-key', { prompt: 'tip one', aspect_ratio: '4:3' })
+    expect(persistImageLocallyMock).toHaveBeenCalledWith('https://snapgen.example/temp-section.jpg')
   })
 })
 

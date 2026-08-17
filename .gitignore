@@ -43,3 +43,7 @@ next-env.d.ts
 
 # production compose file has inline secrets, lives only on the server
 docker-compose.prod.yml
+
+# admin-generated article images, re-hosted locally (see src/lib/images/storage.ts) —
+# real content lives on the server's mounted volume, not in git
+/public/uploads

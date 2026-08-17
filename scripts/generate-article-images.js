@@ -6,8 +6,12 @@ if (existsSync('.env.local')) {
 }
 
 const postgres = require('postgres')
+const { writeFile, mkdir } = require('fs/promises')
+const { randomUUID } = require('crypto')
+const path = require('path')
 
 const API_BASE = 'https://api.snapgen.ai/uapi/v1'
+const UPLOADS_DIR = path.join(__dirname, '..', 'public', 'uploads')
 const SLUG = '5-tips-memilih-warna-cat-interior-rumah-di-batam'
 
 // One cover (16:9) + two inline body images (4:3), inserted before the given
@@ -65,7 +69,32 @@ async function pollUntilDone(apiKey, uuid, initial) {
     record = await res.json()
   }
   if (record.status !== 2) throw new Error(`generation timed out: ${uuid}`)
-  return record.generate_result ?? record.generated_image?.[0]?.image_url
+  const url = record.generate_result ?? record.generated_image?.[0]?.image_url
+  return persistImageLocally(url)
+}
+
+// snapgen.ai's image URLs are signed and expire (~7 days) — download once and re-host
+// under public/uploads so the URL saved to the DB never breaks. Duplicates
+// src/lib/images/storage.ts's logic (this script stays plain CJS, per the divergence
+// noted in CLAUDE.md — no tsx/ts-node dep to bridge CJS -> TS).
+async function persistImageLocally(sourceUrl) {
+  const res = await fetch(sourceUrl)
+  if (!res.ok) throw new Error(`failed to download image: ${res.status}`)
+  const buffer = Buffer.from(await res.arrayBuffer())
+
+  const contentType = res.headers.get('content-type') ?? ''
+  const ext = contentType.includes('png')
+    ? '.png'
+    : contentType.includes('webp')
+      ? '.webp'
+      : contentType.includes('jpeg') || contentType.includes('jpg')
+        ? '.jpg'
+        : path.extname(new URL(sourceUrl).pathname) || '.jpg'
+
+  const filename = `${randomUUID()}${ext}`
+  await mkdir(UPLOADS_DIR, { recursive: true })
+  await writeFile(path.join(UPLOADS_DIR, filename), buffer)
+  return `/uploads/${filename}`
 }
 
 async function main() {

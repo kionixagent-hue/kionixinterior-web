@@ -9,6 +9,7 @@ import { generateSlug } from '@/lib/blog/slug'
 import { nextStatus } from '@/lib/blog/status'
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth/session'
 import { generateImage } from '@/lib/images/snapgen'
+import { persistImageLocally } from '@/lib/images/storage'
 
 async function requireUser() {
   const cookieStore = await cookies()
@@ -137,12 +138,14 @@ function requireSnapgenApiKey(): string {
 
 export async function generateCoverImage(prompt: string): Promise<string> {
   await requireUser()
-  return generateImage(requireSnapgenApiKey(), { prompt, aspect_ratio: '16:9' })
+  const tempUrl = await generateImage(requireSnapgenApiKey(), { prompt, aspect_ratio: '16:9' })
+  return persistImageLocally(tempUrl)
 }
 
 export async function generateBodySectionImage(prompt: string): Promise<string> {
   await requireUser()
-  return generateImage(requireSnapgenApiKey(), { prompt, aspect_ratio: '4:3' })
+  const tempUrl = await generateImage(requireSnapgenApiKey(), { prompt, aspect_ratio: '4:3' })
+  return persistImageLocally(tempUrl)
 }
 
 export async function updateCoverImage(articleId: string, url: string) {

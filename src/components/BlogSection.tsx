@@ -13,6 +13,7 @@ export default async function BlogSection() {
       slug: articleTranslations.slug,
       title: articleTranslations.title,
       quickAnswer: articleTranslations.quickAnswer,
+      coverImageUrl: articles.coverImageUrl,
     })
     .from(articleTranslations)
     .innerJoin(articles, eq(articleTranslations.articleId, articles.id))
@@ -41,10 +42,16 @@ export default async function BlogSection() {
             <Link
               key={row.slug}
               href={`${blogPrefix}/${row.slug}`}
-              className="group flex flex-col gap-3 rounded-lg border border-border bg-bg-section p-7 transition-colors hover:border-accent"
+              className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-bg-section transition-colors hover:border-accent"
             >
-              <h3 className="font-serif text-xl font-bold text-bg-dark group-hover:text-accent">{row.title}</h3>
-              <p className="font-sans text-sm text-text-muted">{row.quickAnswer}</p>
+              {row.coverImageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={row.coverImageUrl} alt={row.title} className="h-44 w-full object-cover" />
+              )}
+              <div className="flex flex-col gap-3 p-7 pt-0 first:pt-7">
+                <h3 className="font-serif text-xl font-bold text-bg-dark group-hover:text-accent">{row.title}</h3>
+                <p className="font-sans text-sm text-text-muted">{row.quickAnswer}</p>
+              </div>
             </Link>
           ))}
         </div>

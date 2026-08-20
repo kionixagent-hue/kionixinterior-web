@@ -274,30 +274,39 @@ async function main() {
     })
     console.log(`Cover: ${coverUrl}`)
 
-    // 5. body images per locale (independent — each locale finds its own sections)
-    const idBody = await insertBodyImages(snapgenKey, article.id.body)
-    const enBody = await insertBodyImages(snapgenKey, article.en.body)
+    // 5. body images per locale (independent — each locale finds its own sections —
+    // run in parallel, each locale's images/polling don't depend on the other)
+    const [idBody, enBody] = await Promise.all([
+      insertBodyImages(snapgenKey, article.id.body),
+      insertBodyImages(snapgenKey, article.en.body),
+    ])
 
     // 6. unique slugs
     const existingSlugs = (await sql`select slug from article_translations`).map((r) => r.slug)
     const idSlug = uniqueSlug(generateSlug(article.id.title), existingSlugs)
     const enSlug = uniqueSlug(generateSlug(article.en.title), [...existingSlugs, idSlug])
 
-    // 7. insert article + translations
-    const [inserted] = await sql`
-      insert into articles (status, tags, cover_image_url)
-      values ('in_review', ${article.tags}, ${coverUrl})
-      returning id
-    `
-    await sql`
-      insert into article_translations (article_id, locale, slug, title, quick_answer, body, meta_description, faq)
-      values (${inserted.id}, 'id', ${idSlug}, ${article.id.title}, ${article.id.quickAnswer}, ${idBody}, ${article.id.metaDescription}, ${sql.json(article.id.faq)})
-    `
-    await sql`
-      insert into article_translations (article_id, locale, slug, title, quick_answer, body, meta_description, faq)
-      values (${inserted.id}, 'en', ${enSlug}, ${article.en.title}, ${article.en.quickAnswer}, ${enBody}, ${article.en.metaDescription}, ${sql.json(article.en.faq)})
-    `
-    console.log(`Inserted article ${inserted.id} (in_review): /${idSlug} (id), /en/blog/${enSlug} (en)`)
+    // 7. insert article + both translations atomically — a NOT NULL violation on one
+    // translation (e.g. LLM omitted a required field) must not leave an orphaned
+    // articles row with zero/one translation behind.
+    let insertedId
+    await sql.begin(async (tx) => {
+      const [inserted] = await tx`
+        insert into articles (status, tags, cover_image_url)
+        values ('in_review', ${article.tags}, ${coverUrl})
+        returning id
+      `
+      insertedId = inserted.id
+      await tx`
+        insert into article_translations (article_id, locale, slug, title, quick_answer, body, meta_description, faq)
+        values (${inserted.id}, 'id', ${idSlug}, ${article.id.title}, ${article.id.quickAnswer}, ${idBody}, ${article.id.metaDescription}, ${sql.json(article.id.faq)})
+      `
+      await tx`
+        insert into article_translations (article_id, locale, slug, title, quick_answer, body, meta_description, faq)
+        values (${inserted.id}, 'en', ${enSlug}, ${article.en.title}, ${article.en.quickAnswer}, ${enBody}, ${article.en.metaDescription}, ${sql.json(article.en.faq)})
+      `
+    })
+    console.log(`Inserted article ${insertedId} (in_review): /${idSlug} (id), /en/blog/${enSlug} (en)`)
 
     // 8. mark topic used — only after the article insert succeeds
     await sql`update topics set status = 'used' where id = ${topic.id}`

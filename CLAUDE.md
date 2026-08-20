@@ -18,7 +18,7 @@ npm run article:seed            # seed a demo article (scripts/seed-article.js)
 npm run article:images           # backfill cover+body images for the seeded article (scripts/generate-article-images.js)
 ```
 
-Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_URL`, `SESSION_SECRET`, `SNAPGEN_API_KEY`.
+Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_URL`, `SESSION_SECRET`, `SNAPGEN_API_KEY`, `FIRECRAWL_API_KEY`, `ANTHROPIC_API_KEY`.
 
 ## Architecture
 
@@ -26,7 +26,7 @@ Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_UR
 - **Admin CMS**: `src/app/admin/` — `page.tsx` (list), `new/page.tsx` (create draft), `[id]/page.tsx` + `[id]/EditForm.tsx` (edit/review/publish), `login/`. All mutations go through `src/app/admin/actions.ts` (`'use server'`), every action starts with the file-local `requireUser()` (cookie session check, throws `'Unauthorized'`).
 - **Auth**: custom, not a library. `src/lib/auth/session.ts` — HMAC-SHA256 session tokens via Web Crypto (Edge-runtime-safe, used from `middleware.ts`). `src/lib/auth/password.ts` — password hashing. `src/middleware.ts` gates `/admin/*` (redirects to `/admin/login` if no valid session) and separately runs next-intl's locale middleware for everything else, plus a Cloudflare-tunnel-specific `cf-ipcountry` check (not `request.geo`, which is always empty behind the tunnel) to default Indonesian visitors to `id` before next-intl's own negotiation runs.
 - **i18n**: `src/i18n/routing.ts` — locales `id`/`en`/`zh`, default `id`, `localePrefix: 'as-needed'`. Blog content is **only `id`/`en`** — `zh` blog routes return `notFound()`. Messages in `src/messages/{id,en,zh}.json`.
-- **DB**: `src/lib/db/schema.ts` (Drizzle, Postgres). Tables: `articles` (status/tags/coverImageUrl/publishedAt), `article_translations` (locale-scoped title/body/quickAnswer/metaDescription/faq, unique on `(locale, slug)` and `(articleId, locale)`), `topics` (keyword discovery queue — **schema only, no auto-generation pipeline wired up yet**), `admin_users`. Client: `src/lib/db/client.ts` (`drizzle(postgres(DATABASE_URL))`).
+- **DB**: `src/lib/db/schema.ts` (Drizzle, Postgres). Tables: `articles` (status/tags/coverImageUrl/publishedAt), `article_translations` (locale-scoped title/body/quickAnswer/metaDescription/faq, unique on `(locale, slug)` and `(articleId, locale)`), `topics` (keyword discovery queue — `status: new/used/dismissed`, populated + consumed by `scripts/daily-article.js`, see below), `admin_users`. Client: `src/lib/db/client.ts` (`drizzle(postgres(DATABASE_URL))`).
 - **Design tokens** (`tailwind.config.ts`): `accent #26A1B0` / `accent-hover #1D8898`, `bg-dark #0C1A1D`, `bg-section #EFF7F8`, `border #C8E4E8`, `text-muted #607A80`, `text-on-dark #FFFFFF`, `wa-green #25D366`. Fonts: `font-serif` (Cormorant, headings), `font-sans` (Plus Jakarta Sans, body). No CSS-in-JS — Tailwind utility classes only.
 
 ## Article image generation (snapgen.ai)
@@ -37,6 +37,20 @@ Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_UR
 - UI: `src/components/admin/CoverImageField.tsx` (prompt textarea + preview; tracks a live `initialPrompt` via `useEffect` until the admin edits it manually — a mount-only `useState` would leave auto-suggest permanently blank) and `GenerateImagesButton.tsx` (one click walks all qualifying `## ` sections, inserts `![heading](url)` after each). Both take callback props (`onGenerate`/`onGenerated`/`onBodyChange`) — decoupled from server actions for testability. Both also report in-flight state via `onRunningChange`/`onGeneratingChange` (generation takes up to ~60s): `new/page.tsx` gates its Submit button on this (submitting mid-generation would `router.push` away and silently discard the result) and makes the Body textarea read-only while running (a concurrent edit would get clobbered by the next image insert); `EditForm.tsx` only needs the read-only-textarea half — it persists the cover independently via `updateCoverImage` and never navigates away, so nothing can be orphaned there.
 - `src/lib/images/storage.ts` — `persistImageLocally(url)`: downloads a (temporary, signed) snapgen.ai URL and re-hosts it under `public/uploads/<uuid>.<ext>`, returning the local `/uploads/...` path stored in the DB instead. **Required**: snapgen.ai's returned URLs are signed and expire (~7 days) — storing them directly breaks images after a week. `generateCoverImage`/`generateBodySectionImage` in `actions.ts` call this after `generateImage()`. Self-hosted Docker deploy (see `Dockerfile`/`docker-compose.prod.yml`) serves `/public` from disk at request time even in `output: 'standalone'` mode, so runtime-written files there are servable with no extra wiring — but the `web` service's container filesystem is otherwise ephemeral across redeploys, so `docker-compose.prod.yml` mounts a named volume at `/app/public/uploads`.
 - `scripts/generate-article-images.js` is a standalone CommonJS backfill script (plain `node`, not part of the Next bundle) — deliberately does **not** import `src/lib/images/*` (no `tsx`/`ts-node` dep in this project to bridge CJS→TS); it duplicates `persistImageLocally`'s logic inline instead.
+
+## Daily trending article generator
+
+- `scripts/daily-article.js` — standalone CJS cron script (same divergence as `generate-article-images.js`: no `src/` imports, duplicates the small logic it needs inline). Runs once daily (06:00 WIB via Docker `cron` service, see below):
+  1. Searches Firecrawl (`POST https://api.firecrawl.dev/v1/search`, `FIRECRAWL_API_KEY`) for trending interior-design keywords, dedupes against existing `topics.keyword` (case-insensitive — logic mirrors `src/lib/topics/dedupe.ts`), inserts new rows with `source: 'firecrawl'`, `status: 'new'`.
+  2. Picks the oldest `status: 'new'` topic. None found → logs and exits 0 (not an error).
+  3. Generates the article text by shelling out to headless Claude Code CLI: `claude -p --output-format json` with the prompt piped via **stdin** (not argv — avoids shell-escaping a long LLM prompt). The prompt template lives in `src/lib/articleGen/buildPrompt.ts` (`buildArticlePrompt`, duplicated inline in the script). **The CLI's `--output-format json` returns an envelope object — the actual response text is in `.result` and needs a second `JSON.parse` (with `src/lib/cli/extractJson.ts`'s wrapper-stripping fallback if the model adds surrounding text).**
+  4. Generates cover (16:9) + up to 2 body images **per locale** via the existing snapgen.ai pattern (`generateImage`/`persistImageLocally`, duplicated inline) — reuses `src/lib/images/sections.ts`'s section-splitting logic to find qualifying `## ` sections per locale independently, so the LLM never has to echo back exact heading text for a marker match.
+  5. Inserts the article (`status: 'in_review'` — **not** auto-published, needs admin review) + both translations **inside a single `sql.begin()` transaction** (a partial insert — e.g. one translation violating a NOT NULL column — must not leave an orphaned `articles` row).
+  6. Marks the topic `status: 'used'` **only after** the transaction commits — any earlier failure leaves it `'new'` for tomorrow's retry.
+  - Slugs go through `uniqueSlug()` (`src/lib/blog/slug.ts`, extends `generateSlug`) to auto-suffix `-2`/`-3` on collision.
+  - On Windows, spawning `claude` needs `claude.cmd` + `shell: true` (platform-conditional in the script) — irrelevant in prod, where the Alpine container has a plain `claude` binary on PATH.
+- **Docker**: `Dockerfile` has a `cron` stage (separate from the lean `runner` web image) — full `node_modules`, `@anthropic-ai/claude-code` installed globally, `TZ=Asia/Jakarta` + `tzdata` (container defaults to UTC otherwise), busybox `crond` running `node scripts/daily-article.js` at `0 6 * * *`. `docker-compose.prod.yml` (gitignored) has a matching `cron` service sharing the `kionix_uploads` volume with `web` (so cron-written images are immediately servable) and requires `ANTHROPIC_API_KEY` set on the server (not committed anywhere, must be added manually before this ships).
+- Design doc: `docs/plans/2026-08-20-daily-trending-article.md`.
 
 ## Non-obvious gotchas
 
@@ -56,3 +70,4 @@ Jest + Testing Library (`jest.config.ts`: jsdom env, `@/*` → `src/*`). Pure lo
 - `docs/plans/2026-07-23-multi-language-i18n.md` — id/en/zh i18n
 - `docs/plans/2026-08-04-kionix-blog-seo-geo.md` — blog + admin CMS + auth
 - `docs/plans/2026-08-08-article-image-generation.md` — snapgen.ai cover/body image generation
+- `docs/plans/2026-08-20-daily-trending-article.md` — daily trending article generator (Firecrawl + Claude CLI + snapgen, Docker cron)

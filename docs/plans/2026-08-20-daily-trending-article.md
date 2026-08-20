@@ -13,6 +13,10 @@
 
 Blog butuh konten baru rutin tanpa admin harus manual riset topik + nulis + generate gambar tiap hari. `topics` table di schema sudah ada (`source`, `score`, `status: new/used/dismissed`) tapi belum ada pipeline yang mengisi/memakainya (dicatat di CLAUDE.md).
 
+### Post-implementation correction (after Phase 6/7 shipped)
+
+Every `ANTHROPIC_API_KEY` mention below/in the Implementation Plan is superseded by **`CLAUDE_CODE_OAUTH_TOKEN`** — the user's Claude Code auth is a Pro/Max monthly subscription, not Console/API pay-per-token billing. Generate the token via `claude setup-token` (interactive, needs a real TTY) or `claude auth login --claudeai`, then set it wherever the CLI runs headless. Same requirement (must be set on the server before the cron job can run), same "flag if missing, don't fabricate" rule — just a different env var name and a different underlying auth mechanism. See CLAUDE.md's "Auth for headless `claude -p`" note.
+
 ### Decisions (dari brainstorm dialog)
 
 | Keputusan | Pilihan |

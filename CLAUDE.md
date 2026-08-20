@@ -18,7 +18,7 @@ npm run article:seed            # seed a demo article (scripts/seed-article.js)
 npm run article:images           # backfill cover+body images for the seeded article (scripts/generate-article-images.js)
 ```
 
-Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_URL`, `SESSION_SECRET`, `SNAPGEN_API_KEY`, `FIRECRAWL_API_KEY`, `ANTHROPIC_API_KEY`.
+Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_URL`, `SESSION_SECRET`, `SNAPGEN_API_KEY`, `FIRECRAWL_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`.
 
 ## Architecture
 
@@ -49,7 +49,8 @@ Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_UR
   6. Marks the topic `status: 'used'` **only after** the transaction commits — any earlier failure leaves it `'new'` for tomorrow's retry.
   - Slugs go through `uniqueSlug()` (`src/lib/blog/slug.ts`, extends `generateSlug`) to auto-suffix `-2`/`-3` on collision.
   - On Windows, spawning `claude` needs `claude.cmd` + `shell: true` (platform-conditional in the script) — irrelevant in prod, where the Alpine container has a plain `claude` binary on PATH.
-- **Docker**: `Dockerfile` has a `cron` stage (separate from the lean `runner` web image) — full `node_modules`, `@anthropic-ai/claude-code` installed globally, `TZ=Asia/Jakarta` + `tzdata` (container defaults to UTC otherwise), busybox `crond` running `node scripts/daily-article.js` at `0 6 * * *`. `docker-compose.prod.yml` (gitignored) has a matching `cron` service sharing the `kionix_uploads` volume with `web` (so cron-written images are immediately servable) and requires `ANTHROPIC_API_KEY` set on the server (not committed anywhere, must be added manually before this ships).
+- **Docker**: `Dockerfile` has a `cron` stage (separate from the lean `runner` web image) — full `node_modules`, `@anthropic-ai/claude-code` installed globally, `TZ=Asia/Jakarta` + `tzdata` (container defaults to UTC otherwise), busybox `crond` running `node scripts/daily-article.js` at `0 6 * * *`. `docker-compose.prod.yml` (gitignored) has a matching `cron` service sharing the `kionix_uploads` volume with `web` (so cron-written images are immediately servable) and requires `CLAUDE_CODE_OAUTH_TOKEN` set on the server (not committed anywhere, must be added manually before this ships).
+- **Auth for headless `claude -p`**: uses the Claude Pro/Max subscription, not a pay-per-token Console API key. Generate the token once via `claude setup-token` (interactive, needs a real TTY — run it from a normal terminal, not a sandboxed/non-interactive shell) or `claude auth login --claudeai`, then set the resulting value as `CLAUDE_CODE_OAUTH_TOKEN` wherever the CLI runs headless. `ANTHROPIC_API_KEY` would also work but bills per-token against Console credits instead of the subscription — deliberately not used here.
 - Design doc: `docs/plans/2026-08-20-daily-trending-article.md`.
 
 ## Non-obvious gotchas

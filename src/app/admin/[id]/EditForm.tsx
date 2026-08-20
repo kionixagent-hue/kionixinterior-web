@@ -40,6 +40,7 @@ export default function EditForm({ article }: { article: Article }) {
     en: article.translations.find((t) => t.locale === 'en'),
   })
   const [saving, setSaving] = useState(false)
+  const [publishing, setPublishing] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [coverImageUrl, setCoverImageUrl] = useState(article.coverImageUrl)
   const [coverSaveError, setCoverSaveError] = useState<string | null>(null)
@@ -86,13 +87,31 @@ export default function EditForm({ article }: { article: Article }) {
   }
 
   async function handlePublish() {
-    await publishArticle(article.id)
-    router.refresh()
+    setPublishing(true)
+    setMessage(null)
+    try {
+      await publishArticle(article.id)
+      setMessage('Dipublikasikan.')
+      router.refresh()
+    } catch {
+      setMessage('Gagal publikasi.')
+    } finally {
+      setPublishing(false)
+    }
   }
 
   async function handleReject() {
-    await rejectArticle(article.id)
-    router.refresh()
+    setPublishing(true)
+    setMessage(null)
+    try {
+      await rejectArticle(article.id)
+      setMessage('Ditolak, kembali ke draft.')
+      router.refresh()
+    } catch {
+      setMessage('Gagal menolak.')
+    } finally {
+      setPublishing(false)
+    }
   }
 
   if (!current) {
@@ -110,16 +129,18 @@ export default function EditForm({ article }: { article: Article }) {
           <button
             type="button"
             onClick={handleReject}
-            className="rounded border border-text-muted px-4 py-2 text-sm text-text-muted hover:border-accent hover:text-accent"
+            disabled={publishing}
+            className="rounded border border-text-muted px-4 py-2 text-sm text-text-muted hover:border-accent hover:text-accent disabled:opacity-50"
           >
             Reject
           </button>
           <button
             type="button"
             onClick={handlePublish}
-            className="rounded bg-accent px-4 py-2 text-sm font-bold text-text-on-dark hover:bg-accent-hover"
+            disabled={publishing}
+            className="rounded bg-accent px-4 py-2 text-sm font-bold text-text-on-dark hover:bg-accent-hover disabled:opacity-50"
           >
-            Approve & Publish
+            {publishing ? 'Menyimpan...' : 'Approve & Publish'}
           </button>
         </div>
       </div>

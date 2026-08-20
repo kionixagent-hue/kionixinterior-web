@@ -55,6 +55,7 @@ Env vars (`.env.local`, gitignored; `.env.example` documents keys): `DATABASE_UR
 
 ## Non-obvious gotchas
 
+- **Multi-stage `Dockerfile` + a compose service with no explicit `target:`** builds the **last** stage defined, not necessarily the one you mean. `docker-compose.prod.yml`'s `web` service originally had no `target:` and implicitly built `runner` (the only stage after `builder`) — this broke silently when the `cron` stage was appended after `runner`: `web` started building/running `cron`'s image (i.e. the `web` container's PID 1 became `crond`, not `next-server`, and the site went down) until `target: runner` was added explicitly. **Every service's `build:` block in a multi-stage Dockerfile must name its `target:` explicitly** — never rely on "last stage wins".
 - **First test importing a file that pulls in `react-markdown`** hits a jest transform error (`Unexpected token 'export'`) — `react-markdown`'s ESM dependency tree isn't in `jest.config.ts`'s `transformIgnorePatterns`. Fix per-test with `jest.mock('react-markdown', ...)` rather than widening the global config.
 - `next build` runs ESLint as part of the build and **fails the build** on unused vars/params — even in test files. `npx tsc --noEmit` alone won't catch this.
 - Drizzle query results (`db.query.articles.findFirst({ with: { translations: true } })`) return all real columns automatically — no need to touch the query when a prop type adds a new column, just extend the TS type.

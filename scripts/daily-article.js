@@ -201,11 +201,12 @@ function buildCoverPrompt(title, quickAnswer) {
   return `${title}. ${quickAnswer}`.slice(0, COVER_PROMPT_MAX_LENGTH)
 }
 
-// insert up to 2 body images (recomputing sections fresh after each insert, since
-// start offsets shift once a section's raw text grows)
+// insert an image after every qualifying section (recomputing sections fresh after
+// each insert, since start offsets shift once a section's raw text grows) — every
+// subheader gets an image, not just the first couple.
 async function insertBodyImages(snapgenApiKey, body) {
   let current = body
-  for (let i = 0; i < 2; i++) {
+  while (true) {
     const qualifying = qualifyingSections(splitSections(current))
     if (qualifying.length === 0) break
     const section = qualifying[0]

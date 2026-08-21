@@ -42,9 +42,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const row = await getArticle(locale, slug)
   if (!row) return {}
 
+  const path = locale === 'id' ? `/blog/${slug}` : `/${locale}/blog/${slug}`
+
   return {
     title: row.translation.title,
     description: row.translation.metaDescription,
+    alternates: { canonical: path },
+    robots: { index: true, follow: true },
     openGraph: {
       title: row.translation.title,
       description: row.translation.metaDescription,

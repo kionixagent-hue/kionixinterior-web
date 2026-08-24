@@ -293,8 +293,8 @@ async function main() {
     let insertedId
     await sql.begin(async (tx) => {
       const [inserted] = await tx`
-        insert into articles (status, tags, cover_image_url)
-        values ('in_review', ${article.tags}, ${coverUrl})
+        insert into articles (status, tags, cover_image_url, published_at)
+        values ('published', ${article.tags}, ${coverUrl}, now())
         returning id
       `
       insertedId = inserted.id
@@ -307,7 +307,7 @@ async function main() {
         values (${inserted.id}, 'en', ${enSlug}, ${article.en.title}, ${article.en.quickAnswer}, ${enBody}, ${article.en.metaDescription}, ${sql.json(article.en.faq)})
       `
     })
-    console.log(`Inserted article ${insertedId} (in_review): /${idSlug} (id), /en/blog/${enSlug} (en)`)
+    console.log(`Inserted article ${insertedId} (published): /${idSlug} (id), /en/blog/${enSlug} (en)`)
 
     // 8. mark topic used — only after the article insert succeeds
     await sql`update topics set status = 'used' where id = ${topic.id}`

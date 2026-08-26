@@ -13,6 +13,7 @@ export const articles = pgTable('articles', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   publishedAt: timestamp('published_at', { withTimezone: true }),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  socialPostedAt: timestamp('social_posted_at', { withTimezone: true }),
 }).enableRLS()
 
 export const articleTranslations = pgTable('article_translations', {

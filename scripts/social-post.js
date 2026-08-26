@@ -202,7 +202,14 @@ async function main() {
         profileId: ZERNIO_PROFILE_ID,
         platforms: [
           { platform: 'instagram', accountId: ZERNIO_IG_ACCOUNT_ID },
-          { platform: 'tiktok', accountId: ZERNIO_TIKTOK_ACCOUNT_ID },
+          {
+            platform: 'tiktok',
+            accountId: ZERNIO_TIKTOK_ACCOUNT_ID,
+            // TikTok photo posts use the platform's content (customContent) as the
+            // slideshow title, hard-capped at ~90 chars — Zernio rejects the whole
+            // request otherwise, even with tiktokSettings.description set.
+            customContent: translation.title.slice(0, 90),
+          },
         ],
         mediaItems: imageUrls.map((url) => ({ type: 'image', url })),
         tiktokSettings: {

@@ -2,8 +2,11 @@ const ZERNIO_POSTS_URL = 'https://zernio.com/api/v1/posts'
 
 // Verified live against the Zernio API on 2026-08-26 (see
 // docs/plans/2026-08-26-instagram-tiktok-auto-posting.md's "Kontrak API Zernio").
+const TIKTOK_TITLE_MAX_LENGTH = 90
+
 export function buildZernioPayload(input: {
   caption: string
+  tiktokTitle: string
   imageUrls: string[]
   profileId: string
   igAccountId: string
@@ -17,7 +20,15 @@ export function buildZernioPayload(input: {
     profileId: input.profileId,
     platforms: [
       { platform: 'instagram', accountId: input.igAccountId },
-      { platform: 'tiktok', accountId: input.tiktokAccountId },
+      {
+        platform: 'tiktok',
+        accountId: input.tiktokAccountId,
+        // TikTok photo posts use the platform's `content` (here, customContent) as the
+        // slideshow title, hard-capped at ~90 chars — Zernio rejects the request outright
+        // rather than truncating, even with tiktokSettings.description set. The article
+        // title is short by construction; sliced defensively in case a future one isn't.
+        customContent: input.tiktokTitle.slice(0, TIKTOK_TITLE_MAX_LENGTH),
+      },
     ],
     mediaItems: input.imageUrls.map((url) => ({ type: 'image', url })),
     tiktokSettings: {

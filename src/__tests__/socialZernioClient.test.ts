@@ -4,6 +4,7 @@ describe('buildZernioPayload', () => {
   it('produces the exact request shape validated against the live Zernio API', () => {
     const payload = buildZernioPayload({
       caption: 'Caption text',
+      tiktokTitle: 'Short Article Title',
       imageUrls: ['https://kionixinterior.com/uploads/a.jpg', 'https://kionixinterior.com/uploads/b.jpg'],
       profileId: 'PROFILE_ID',
       igAccountId: 'IG_ID',
@@ -18,7 +19,7 @@ describe('buildZernioPayload', () => {
       profileId: 'PROFILE_ID',
       platforms: [
         { platform: 'instagram', accountId: 'IG_ID' },
-        { platform: 'tiktok', accountId: 'TT_ID' },
+        { platform: 'tiktok', accountId: 'TT_ID', customContent: 'Short Article Title' },
       ],
       mediaItems: [
         { type: 'image', url: 'https://kionixinterior.com/uploads/a.jpg' },
@@ -36,6 +37,22 @@ describe('buildZernioPayload', () => {
         description: 'Caption text',
       },
     })
+  })
+
+  it('truncates a tiktokTitle longer than 90 chars', () => {
+    const longTitle = 'A'.repeat(120)
+    const payload = buildZernioPayload({
+      caption: 'Caption text',
+      tiktokTitle: longTitle,
+      imageUrls: ['https://kionixinterior.com/uploads/a.jpg'],
+      profileId: 'PROFILE_ID',
+      igAccountId: 'IG_ID',
+      tiktokAccountId: 'TT_ID',
+      tiktokPrivacyLevel: 'PUBLIC_TO_EVERYONE',
+    })
+
+    const tiktokPlatform = payload.platforms.find((p) => p.platform === 'tiktok') as { customContent: string }
+    expect(tiktokPlatform.customContent).toHaveLength(90)
   })
 })
 

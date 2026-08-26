@@ -35,6 +35,7 @@ describe('buildZernioPayload', () => {
         express_consent_given: true,
         media_type: 'photo',
         description: 'Caption text',
+        draft: true,
       },
     })
   })

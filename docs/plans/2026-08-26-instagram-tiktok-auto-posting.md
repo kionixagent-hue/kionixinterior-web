@@ -187,8 +187,24 @@ karena file itu gitignored dan tidak ikut ter-deploy lewat `git pull`.
   saja tanpa nge-duplikat Instagram) — `social_posted_at` cuma 1 kolom per artikel,
   bukan per-platform. Ditemukan real di post live pertama (2026-08-26): TikTok gagal
   dengan `"direct posting is at capacity"` (rate limit dari sisi TikTok, bukan bug kita),
-  Instagram tetap sukses independen. Diputuskan: biarkan cron 2x/hari jalan natural,
-  revisit per-platform retry cuma kalau TikTok terus-menerus gagal.
+  Instagram tetap sukses independen. Masih belum ada — tapi dengan fix `draft: true` di
+  bawah, seharusnya sudah tidak ada lagi kegagalan capacity untuk di-retry.
+
+### Post-mortem: TikTok capacity → `draft: true` (2026-08-27)
+
+Pesan error Zernio untuk kegagalan capacity di atas ternyata **mengandung solusinya sendiri**:
+`"...Use tiktokSettings.draft: true to deliver via Creator Inbox, or try again in a few
+hours as capacity frees up."` Dicek langsung lewat `GET /v1/posts` ke Zernio (bukan tebakan)
+untuk konfirmasi status per-platform post live pertama.
+
+**Fix diterapkan:** `tiktokSettings.draft: true` ditambahkan di `buildZernioPayload`
+(`src/lib/social/zernio.ts`) dan duplikatnya di `scripts/social-post.js`. Ini menghilangkan
+error capacity sepenuhnya, tapi **trade-off**: postingan TikTok tidak lagi terbit otomatis
+100% — masuk ke **Creator Inbox** TikTok, dan seseorang harus buka app TikTok lalu tap
+"Post" sekali per artikel untuk benar-benar menerbitkannya. Ini keputusan sadar (dipilih
+user lewat AskUserQuestion) demi keandalan (tidak ada lagi post yang hilang karena
+kapasitas) di atas otomatisasi penuh. Direct-post otomatis murni baru bisa dipertimbangkan
+lagi kalau akun TikTok sudah lolos audit TikTok untuk direct-post capability.
 
 ## Implementation Plan
 

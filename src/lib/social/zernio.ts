@@ -44,6 +44,13 @@ export function buildZernioPayload(input: {
       // Zernio rejects (doesn't silently truncate) captions longer than that unless a
       // `description` is also supplied, which carries the full text instead.
       description: input.caption,
+      // Direct posting hit TikTok's own "at capacity" gate for this (newly-connected)
+      // account — confirmed live 2026-08-26, Zernio's own error message names this as
+      // the fix: deliver via TikTok's Creator Inbox instead of direct publish. Trades
+      // full automation for reliability — a human still taps "Post" once inside the
+      // TikTok app per article. Revisit direct posting if the account gets audited/
+      // capacity opens up.
+      draft: true,
     },
   }
 }

@@ -224,6 +224,11 @@ async function main() {
           // TikTok photo posts use `content` as the slideshow title (~90 char cap) —
           // `description` carries the full caption instead of getting rejected/truncated.
           description: caption,
+          // Direct posting hit TikTok's "at capacity" gate for this account (confirmed
+          // live 2026-08-26) — Zernio's own error names the fix: deliver via TikTok's
+          // Creator Inbox instead. A human taps "Post" once per article in the TikTok
+          // app; revisit direct posting if the account gets audited/capacity opens up.
+          draft: true,
         },
       }
 

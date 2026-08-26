@@ -26,6 +26,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN apk add --no-cache tzdata
 ENV TZ=Asia/Jakarta
+# fontconfig + a real sans font — Alpine ships neither by default, so sharp/librsvg's
+# SVG text compositing (scripts/social-post.js's slide overlays) silently renders empty
+# tofu boxes instead of glyphs without this (confirmed live: font-family="sans-serif"
+# resolved to nothing on a bare node:20-alpine).
+RUN apk add --no-cache fontconfig ttf-dejavu && fc-cache -f
 RUN npm install -g @anthropic-ai/claude-code
 RUN printf '%s\n%s\n' \
       "0 6,16 * * * cd /app && node scripts/daily-article.js >> /proc/1/fd/1 2>&1" \

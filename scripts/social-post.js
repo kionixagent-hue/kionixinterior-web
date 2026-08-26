@@ -101,7 +101,7 @@ function buildOverlaySvg(text, variant) {
       </defs>
       <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#scrim)" />
       ${accentBar}
-      <text font-family="sans-serif" font-weight="700" font-size="${fontSize}" fill="${TEXT_ON_DARK}">${tspans}</text>
+      <text font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="${fontSize}" fill="${TEXT_ON_DARK}">${tspans}</text>
     </svg>
   `
 }

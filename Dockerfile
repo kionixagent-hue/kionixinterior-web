@@ -27,5 +27,8 @@ COPY . .
 RUN apk add --no-cache tzdata
 ENV TZ=Asia/Jakarta
 RUN npm install -g @anthropic-ai/claude-code
-RUN echo "0 6,16 * * * cd /app && node scripts/daily-article.js >> /proc/1/fd/1 2>&1" > /etc/crontabs/root
+RUN printf '%s\n%s\n' \
+      "0 6,16 * * * cd /app && node scripts/daily-article.js >> /proc/1/fd/1 2>&1" \
+      "15 6,16 * * * cd /app && node scripts/social-post.js >> /proc/1/fd/1 2>&1" \
+      > /etc/crontabs/root
 CMD ["crond", "-f", "-l", "2"]

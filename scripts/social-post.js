@@ -214,6 +214,9 @@ async function main() {
           content_preview_confirmed: true,
           express_consent_given: true,
           media_type: 'photo',
+          // TikTok photo posts use `content` as the slideshow title (~90 char cap) —
+          // `description` carries the full caption instead of getting rejected/truncated.
+          description: caption,
         },
       }
 

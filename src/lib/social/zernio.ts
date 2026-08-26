@@ -29,6 +29,10 @@ export function buildZernioPayload(input: {
       content_preview_confirmed: true,
       express_consent_given: true,
       media_type: 'photo',
+      // TikTok photo posts use `content` as the slideshow title, capped at ~90 chars —
+      // Zernio rejects (doesn't silently truncate) captions longer than that unless a
+      // `description` is also supplied, which carries the full text instead.
+      description: input.caption,
     },
   }
 }

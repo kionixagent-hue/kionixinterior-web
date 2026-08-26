@@ -33,6 +33,7 @@ describe('buildZernioPayload', () => {
         content_preview_confirmed: true,
         express_consent_given: true,
         media_type: 'photo',
+        description: 'Caption text',
       },
     })
   })

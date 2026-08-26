@@ -1,0 +1,48 @@
+const ZERNIO_POSTS_URL = 'https://zernio.com/api/v1/posts'
+
+// Verified live against the Zernio API on 2026-08-26 (see
+// docs/plans/2026-08-26-instagram-tiktok-auto-posting.md's "Kontrak API Zernio").
+export function buildZernioPayload(input: {
+  caption: string
+  imageUrls: string[]
+  profileId: string
+  igAccountId: string
+  tiktokAccountId: string
+  tiktokPrivacyLevel: string
+}) {
+  return {
+    content: input.caption,
+    publishNow: true,
+    timezone: 'Asia/Jakarta',
+    profileId: input.profileId,
+    platforms: [
+      { platform: 'instagram', accountId: input.igAccountId },
+      { platform: 'tiktok', accountId: input.tiktokAccountId },
+    ],
+    mediaItems: input.imageUrls.map((url) => ({ type: 'image', url })),
+    tiktokSettings: {
+      privacy_level: input.tiktokPrivacyLevel,
+      allow_comment: true,
+      allow_duet: true,
+      allow_stitch: true,
+      commercial_content_type: 'none',
+      content_preview_confirmed: true,
+      express_consent_given: true,
+      media_type: 'photo',
+    },
+  }
+}
+
+export async function postToZernio(
+  apiKey: string,
+  payload: unknown,
+  fetchImpl: typeof fetch = fetch
+): Promise<unknown> {
+  const res = await fetchImpl(ZERNIO_POSTS_URL, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error(`Zernio post failed: ${res.status} ${await res.text()}`)
+  return res.json()
+}

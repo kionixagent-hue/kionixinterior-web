@@ -183,6 +183,12 @@ karena file itu gitignored dan tidak ikut ter-deploy lewat `git pull`.
 - Analytics/tracking hasil post (likes, reach) — bukan bagian dari scope ini.
 - Retry backoff canggih (exponential backoff dll) — cukup "coba lagi cron berikutnya"
   karena frekuensi udah 2x/hari.
+- **Per-platform retry** (kalau Instagram sukses tapi TikTok gagal, coba ulang TikTok
+  saja tanpa nge-duplikat Instagram) — `social_posted_at` cuma 1 kolom per artikel,
+  bukan per-platform. Ditemukan real di post live pertama (2026-08-26): TikTok gagal
+  dengan `"direct posting is at capacity"` (rate limit dari sisi TikTok, bukan bug kita),
+  Instagram tetap sukses independen. Diputuskan: biarkan cron 2x/hari jalan natural,
+  revisit per-platform retry cuma kalau TikTok terus-menerus gagal.
 
 ## Implementation Plan
 

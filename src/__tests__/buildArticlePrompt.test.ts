@@ -8,6 +8,11 @@ describe('buildArticlePrompt', () => {
     expect(prompt).toContain('Batam')
   })
 
+  it('directs both the content and its visual style toward modern minimalist', () => {
+    const prompt = buildArticlePrompt('storage kecil')
+    expect(prompt.toLowerCase()).toContain('modern minimalis')
+  })
+
   it('specifies the JSON contract keys the parser depends on', () => {
     const prompt = buildArticlePrompt('storage kecil')
     expect(prompt).toContain('"id"')

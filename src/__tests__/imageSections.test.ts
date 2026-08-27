@@ -87,7 +87,7 @@ describe('insertImageAfterSection', () => {
 
 describe('buildSectionImagePrompt', () => {
   it('builds a brand-styled prompt from the heading', () => {
-    expect(buildSectionImagePrompt('Tip One')).toBe('Tip One — warm tropical interior, photorealistic')
+    expect(buildSectionImagePrompt('Tip One')).toBe('Tip One — modern minimalist interior, photorealistic')
   })
 })
 

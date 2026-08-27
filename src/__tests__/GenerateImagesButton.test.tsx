@@ -51,8 +51,8 @@ describe('GenerateImagesButton', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Generate Images' }))
 
     await waitFor(() => expect(onGenerate).toHaveBeenCalledTimes(2))
-    expect(onGenerate).toHaveBeenNthCalledWith(1, 'Tip One — warm tropical interior, photorealistic')
-    expect(onGenerate).toHaveBeenNthCalledWith(2, 'Tip Two — warm tropical interior, photorealistic')
+    expect(onGenerate).toHaveBeenNthCalledWith(1, 'Tip One — modern minimalist interior, photorealistic')
+    expect(onGenerate).toHaveBeenNthCalledWith(2, 'Tip Two — modern minimalist interior, photorealistic')
 
     const finalBody = onBodyChange.mock.calls[onBodyChange.mock.calls.length - 1][0]
     const reparsed = splitSections(finalBody)

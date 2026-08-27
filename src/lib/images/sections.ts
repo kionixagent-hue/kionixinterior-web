@@ -31,7 +31,7 @@ export function insertImageAfterSection(body: string, section: Section, imageMar
 }
 
 export function buildSectionImagePrompt(heading: string): string {
-  return `${heading} — warm tropical interior, photorealistic`
+  return `${heading} — modern minimalist interior, photorealistic`
 }
 
 export function buildCoverPrompt(title: string, quickAnswer: string): string {

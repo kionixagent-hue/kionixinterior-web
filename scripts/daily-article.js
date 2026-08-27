@@ -53,6 +53,8 @@ Tulis satu artikel blog SEO tentang topik: "${topic}".
 
 Tulis dalam gaya artikel Kionix Interior yang sudah ada: praktis, actionable, tips bernomor dengan heading markdown "## ", tiap section 2-4 kalimat, diakhiri paragraf CTA yang mengarahkan pembaca menghubungi Kionix Interior lewat WhatsApp untuk konsultasi.
 
+Arahkan rekomendasi desain/gaya di semua tips ke arah **modern minimalis**: garis bersih, palet warna netral/monokrom, furnitur fungsional tanpa ornamen berlebihan, ruang terasa lapang dan tidak cluttered — tetap disesuaikan dengan iklim tropis Batam (ventilasi, material anti-lembap) di mana relevan.
+
 Balas HANYA dengan satu JSON object mentah (tanpa markdown code fence, tanpa teks pembungkus apa pun), persis struktur berikut:
 
 {
@@ -194,7 +196,7 @@ function insertImageAfterSection(body, section, imageMarkdown) {
 }
 
 function buildSectionImagePrompt(heading) {
-  return `${heading} — warm tropical interior, photorealistic`
+  return `${heading} — modern minimalist interior, photorealistic`
 }
 
 function buildCoverPrompt(title, quickAnswer) {

@@ -14,15 +14,32 @@ const { execFileSync } = require('child_process')
 const SNAPGEN_API_BASE = 'https://api.snapgen.ai/uapi/v1'
 const FIRECRAWL_SEARCH_URL = 'https://api.firecrawl.dev/v1/search'
 const UPLOADS_DIR = path.join(__dirname, '..', 'public', 'uploads')
-const TRENDING_QUERY = 'tren desain interior rumah Indonesia Batam 2026'
+// Rotated instead of a single hardcoded "tren ... 2026" query — that one query kept
+// re-surfacing year-pinned trend roundups and flooded the topics queue with near-
+// duplicate "Tren Desain Interior 2026" articles. Mix of evergreen tips + practical
+// how-to angles so readers get more useful, less repetitive topics.
+const SEARCH_QUERIES = [
+  'tips memilih material interior rumah tropis Indonesia',
+  'tips desain ruang kecil minimalis Indonesia',
+  'tips renovasi dapur rumah Indonesia',
+  'tips pencahayaan interior rumah tropis lembap',
+  'tips memilih warna cat interior rumah minimalis',
+  'tips menata ruang tamu sempit minimalis',
+  'tips interior rumah anti lembap iklim tropis',
+  'tips memilih furniture rumah minimalis Indonesia',
+]
 
 // ---- topic discovery (Firecrawl) ----
 
 async function searchTrendingTopics(apiKey) {
+  // deterministic per-day rotation (not random) — cycles through categories evenly
+  // instead of clustering on whichever gets picked by chance.
+  const dayIndex = Math.floor(Date.now() / 86400000)
+  const query = SEARCH_QUERIES[dayIndex % SEARCH_QUERIES.length]
   const res = await fetch(FIRECRAWL_SEARCH_URL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: TRENDING_QUERY, limit: 10 }),
+    body: JSON.stringify({ query, limit: 10 }),
   })
   if (!res.ok) throw new Error(`firecrawl search failed: ${res.status} ${await res.text()}`)
   const data = await res.json()

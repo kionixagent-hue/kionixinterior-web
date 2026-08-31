@@ -1,6 +1,9 @@
 const API_BASE = 'https://api.snapgen.ai/uapi/v1'
 const DEFAULT_POLL_INTERVAL_MS = 3000
-const DEFAULT_MAX_ATTEMPTS = 20
+// ponytail: nano-banana-pro generation now regularly takes ~55-60s (measured live against
+// the API on 2026-08-31) — 20 attempts (60s) was timing out real successes, not just genuine
+// failures. Bumped for margin; revisit if snapgen gets consistently slower still.
+const DEFAULT_MAX_ATTEMPTS = 40
 
 type GenerateOpts = { prompt: string; aspect_ratio: '16:9' | '4:3' }
 type PollConfig = { pollIntervalMs?: number; maxAttempts?: number }

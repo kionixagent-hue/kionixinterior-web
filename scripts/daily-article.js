@@ -151,7 +151,11 @@ async function generateImage(apiKey, { prompt, aspect_ratio }) {
 
 async function pollUntilDone(apiKey, uuid, initial) {
   let record = initial
-  for (let i = 0; record.status !== 2 && i < 20; i++) {
+  // ponytail: nano-banana-pro generation now regularly takes ~55-60s (measured live against
+  // the API on 2026-08-31) — 20 attempts (60s) was timing out real successes, killing the
+  // whole day's article on one slow section image. Bumped for margin, kept in sync with
+  // src/lib/images/snapgen.ts's DEFAULT_MAX_ATTEMPTS.
+  for (let i = 0; record.status !== 2 && i < 40; i++) {
     if (record.status === 3) throw new Error(`generation failed: ${record.error_message}`)
     await new Promise((r) => setTimeout(r, 3000))
     const res = await fetch(`${SNAPGEN_API_BASE}/history/${uuid}`, { headers: { 'x-api-key': apiKey } })

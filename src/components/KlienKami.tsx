@@ -6,6 +6,7 @@ const clients = [
   { src: '/images/logo-hotel-89.png', alt: 'Hotel 89', width: 100, height: 100, href: 'https://89hotel.com/id-id/' },
   { src: '/images/logo-lamoist.png',  alt: 'Lamoist',  width: 203, height: 100, href: 'https://lamoist.com/' },
   { src: '/images/ladyannlogo.jpeg',  alt: 'Ladyann',  width: 139, height: 100, href: 'https://www.ladyannbakes.com/' },
+  { src: '/images/logo-bluebird.png', alt: 'Bluebird', width: 177, height: 100, href: 'https://www.bluebirdgroup.com/' },
 ]
 
 export default async function KlienKami() {
